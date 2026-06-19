@@ -12,6 +12,8 @@ import SwiftUI
 }
 
 struct MainScreen: View {
+    @State private var navigateToChat = false
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -29,9 +31,13 @@ struct MainScreen: View {
                         .font(.system(size: 24, weight: .bold))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 8)
+
                     OpenChatButton(action: {
-                        print("Button tapped")
+                        navigateToChat = true
                     })
+                    .navigationDestination(isPresented: $navigateToChat) {
+                        ChatScreen()
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -1,0 +1,265 @@
+//
+//  ChatChatUIConfig.swift
+//  fviu
+//
+//  Created by lilit on 18.06.26.
+//
+
+
+import SwiftUI
+
+#Preview {
+        VStack(spacing: 24) {
+            OpenChatButton(action: {
+                print("Button tapped")
+            })
+            ChatHistoryItem(action: {
+                print("Button tapped")
+            },
+            summary: "Summary title texting longe text to see how it wraps and looks",
+            time: "13:45 AM"
+            )
+            ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
+       
+                    ReceiverChatBubble(messageText: "hi")
+                    GradientChatBubble(text: "hi")
+             TypingIndicatorView()
+            }
+    
+}
+
+
+
+struct CustomCapsuleButtonStyle: ButtonStyle {
+    var background: AnyShapeStyle
+    var verticalPadding: CGFloat
+    var isScaled: Bool = false
+    
+    init<S: ShapeStyle>(background: S, verticalPadding: CGFloat, isScaled: Bool = false) {
+        self.background = AnyShapeStyle(background)
+        self.verticalPadding = verticalPadding
+        self.isScaled = isScaled
+    }
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .semibold))
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, verticalPadding)
+            .background(Capsule().fill(background))
+            .opacity(isScaled ? 1.0 : (configuration.isPressed ? 0.7 : 1.0))
+            .scaleEffect(isScaled && configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+
+
+struct ChatBubbleShape: Shape {
+    var isFromCurrentUser: Bool
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: isFromCurrentUser ?
+            [.topLeft, .topRight, .bottomLeft] :
+                [.topLeft, .topRight, .bottomRight],
+            cornerRadii: CGSize(width: ChatChatUIConfig.CornerRadii.defaultBubbleRadius, height: ChatChatUIConfig.CornerRadii.defaultBubbleRadius)
+        )
+        return Path(path.cgPath)
+    }
+}
+
+struct GradientChatBubble: View {
+    let text: String
+    
+    var body: some View {
+        Text(text)
+            .font(.system(size: ChatChatUIConfig.Sizes.bubbleFontSize, weight: .regular))
+            .foregroundColor(.white)
+            .lineSpacing(ChatChatUIConfig.Sizes.bubbleLineSpacing)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .background(ChatChatUIConfig.Colors.brandGradient)
+            .clipShape(ChatBubbleShape(isFromCurrentUser: true))
+            .frame(maxWidth: ChatChatUIConfig.Sizes.maxBubbleWidth, alignment: .trailing)
+    }
+}
+
+struct ReceiverChatBubble: View {
+    let messageText: String
+    
+    var body: some View {
+        Text(messageText)
+            .font(.system(size: ChatChatUIConfig.Sizes.bubbleFontSize, weight: .regular))
+            .foregroundColor(.white)
+            .lineSpacing(ChatChatUIConfig.Sizes.bubbleLineSpacing)
+            .padding(.horizontal, 18)
+            .padding(.vertical, 14)
+            .background(ChatChatUIConfig.Colors.receiverBubbleBg)
+            .clipShape(
+                UnevenRoundedRectangle(
+                    topLeadingRadius: ChatChatUIConfig.CornerRadii.defaultBubbleRadius,
+                    bottomLeadingRadius: 0,
+                    bottomTrailingRadius: ChatChatUIConfig.CornerRadii.defaultBubbleRadius,
+                    topTrailingRadius: ChatChatUIConfig.CornerRadii.defaultBubbleRadius
+                )
+            )
+            .frame(maxWidth: ChatChatUIConfig.Sizes.maxBubbleWidth, alignment: .leading)
+    }
+}
+
+struct TypingIndicatorView: View {
+    @State private var isAnimating = false
+    
+    var body: some View {
+        HStack(alignment: .center, spacing: 10) {
+            Circle()
+                .fill(ChatChatUIConfig.Colors.brandGradient)
+                .frame(width: ChatChatUIConfig.Sizes.indicatorDotLarge, height: ChatChatUIConfig.Sizes.indicatorDotLarge)
+                .scaleEffect(isAnimating ? 1.15 : 0.85)
+                .animation(.easeInOut(duration: 0.5).repeatForever().delay(0), value: isAnimating)
+            
+            Circle()
+                .fill(ChatChatUIConfig.Colors.inactiveDotBg)
+                .frame(width: ChatChatUIConfig.Sizes.indicatorDotMedium, height: ChatChatUIConfig.Sizes.indicatorDotMedium)
+                .scaleEffect(isAnimating ? 1.15 : 0.85)
+                .animation(.easeInOut(duration: 0.5).repeatForever().delay(0.15), value: isAnimating)
+            
+            Circle()
+                .fill(ChatChatUIConfig.Colors.inactiveDotBg)
+                .frame(width: ChatChatUIConfig.Sizes.indicatorDotSmall, height: ChatChatUIConfig.Sizes.indicatorDotSmall)
+                .scaleEffect(isAnimating ? 1.15 : 0.85)
+                .animation(.easeInOut(duration: 0.5).repeatForever().delay(0.3), value: isAnimating)
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 14)
+        .background(ChatChatUIConfig.Colors.receiverBubbleBg)
+        .clipShape(
+            UnevenRoundedRectangle(
+                topLeadingRadius: ChatChatUIConfig.CornerRadii.indicatorBubbleRadius,
+                bottomLeadingRadius: 0, 
+                bottomTrailingRadius: ChatChatUIConfig.CornerRadii.indicatorBubbleRadius,
+                topTrailingRadius: ChatChatUIConfig.CornerRadii.indicatorBubbleRadius
+            )
+        )
+        .onAppear {
+            isAnimating = true
+        }
+    }
+}
+
+
+
+import SwiftUI
+
+extension View {
+    func brandCardStyle(cornerRadius: CGFloat = 20, isSelected: Bool = true) -> some View {
+        self
+            .background(Color(red: 0.05, green: 0.05, blue: 0.07))
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(
+                        isSelected ? ChatChatUIConfig.Colors.brandGradient : LinearGradient(colors: [ChatChatUIConfig.Paywall.inactiveBorderColor], startPoint: .leading, endPoint: .trailing),
+                        lineWidth: 2
+                    )
+            )
+    }
+}
+
+
+
+
+
+import SwiftUI
+struct OpenChatButton: View {
+    var action: () -> Void
+    
+    var body: some View {
+        ZStack {
+            Button(action: action) {
+                HStack(spacing: 12) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 20, weight: .medium))
+                    
+                    Text("Ask anything...")
+                        .font(.system(size: 18))
+                        .foregroundColor(.gray)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
+                .background(
+                    Capsule()
+                        .fill(Color(red: 0.1, green: 0.08, blue: 0.12))
+                )
+                .overlay(
+                    Capsule()
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    Color.blue.opacity(0.4),
+                                    Color.purple.opacity(0.4),
+                                    Color.pink.opacity(0.3)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
+                )
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.horizontal)
+        }
+    }
+}
+
+struct ChatHistoryItem: View {
+    var action: () -> Void
+    var summary: String
+    var time: String
+    
+    var body: some View {
+        ZStack {
+            
+            Button(action: action) {
+                HStack(spacing: 12) {
+                    
+                    Image(.twoSparkles)
+                        .font(.system(size: 20, weight: .medium))
+                    
+                    
+                    VStack(alignment: .leading){
+                        Text(summary)
+                            .font(.system(size: 16))
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+
+                            
+                        Text(time)
+                            .font(.system(size: 14))
+                            .foregroundColor(.gray)
+                    }
+                    
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color(red: 0.1, green: 0.08, blue: 0.12))
+                )
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.horizontal)
+            
+        }
+    }
+}
+
+
+

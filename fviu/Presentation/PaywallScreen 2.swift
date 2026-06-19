@@ -1,11 +1,22 @@
 //
-//  PaywallScreen.swift
+//  SubscriptionOption.swift
 //  fviu
 //
-//  Created by lilit on 18.06.26.
+//  Created by lilit on 19.06.26.
 //
-
 import SwiftUI
+
+#Preview {
+    PaywallScreen()
+}
+
+struct SubscriptionOption: Identifiable {
+    let id = UUID()
+    let duration: String
+    let weeklyPrice: String
+    let fullPrice: String
+    let discountBadge: String?
+}
 
 struct PaywallScreen: View {
     @Environment(\.dismiss) private var dismiss
@@ -18,7 +29,7 @@ struct PaywallScreen: View {
     @State private var showButton = false
     var body: some View {
             ZStack {
-                ChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
+                ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
                 
                 VStack(spacing: 24) {
                     Spacer()
@@ -93,7 +104,7 @@ struct PaywallScreen: View {
                 
                 Text(option.fullPrice)
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(ChatUIConfig.Paywall.subTextColor)
+                    .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
             }
             
             Spacer()
@@ -104,7 +115,7 @@ struct PaywallScreen: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .background(ChatUIConfig.Colors.brandGradient)
+                    .background(ChatChatUIConfig.Colors.brandGradient)
                     .clipShape(Capsule())
             }
         }
@@ -125,7 +136,7 @@ struct PaywallScreen: View {
             Text("Cancel anytime")
         }
         .font(.system(size: 15, weight: .medium))
-        .foregroundColor(ChatUIConfig.Paywall.subTextColor)
+        .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
     }
     
     @ViewBuilder
@@ -133,13 +144,17 @@ struct PaywallScreen: View {
         Button(action: { print("Purchase triggered for: \(String(describing: selectedId))") }) {
             Text("Unlock now")
         }
-        .buttonStyle(GradientButtonStyle())
+        .buttonStyle(CustomCapsuleButtonStyle(
+            background: ChatChatUIConfig.Colors.brandGradient,
+            verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding,
+            isScaled: true
+        ))
     }
     
     @ViewBuilder
     private var featuresList: some View {
         VStack(alignment: .leading, spacing: 12) {
-            featureRow(icon: .sparkle, title: "Get results in seconds")
+            featureRow(icon: .sparkles, title: "Get results in seconds")
             featureRow(icon: .edit, title: "Turn any text into better writing")
             featureRow(icon: .text, title: "Simplify complex information")
             featureRow(icon: .image, title: "Create content with AI templates")
@@ -158,7 +173,7 @@ struct PaywallScreen: View {
             Text("Terms of use")
         }
         .font(.system(size: 14, weight: .medium))
-        .foregroundColor(ChatUIConfig.Paywall.subTextColor)
+        .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
         .padding(.horizontal, 10)
     }
     
@@ -176,8 +191,4 @@ struct PaywallScreen: View {
         }
     }
     
-}
-
-#Preview {
-    PaywallScreen()
 }
