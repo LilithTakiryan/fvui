@@ -21,7 +21,7 @@ struct ChatScreen: View {
             
             ScrollView {
                 VStack {
-                  
+                    ShortChatInputView()
                 }
             }
         }
@@ -72,3 +72,59 @@ struct ChatScreen: View {
     }
 }
 
+import SwiftUI
+struct ShortChatInputView: View {
+    @State private var inputText: String = ""
+    @State private var showBottomSheet: Bool = true
+    
+    var body: some View {
+        Color.black
+            .ignoresSafeArea()
+            .sheet(isPresented: $showBottomSheet) {
+                VStack {
+                    HStack(alignment: .bottom) {
+                        TextField("How can I help you?", text: $inputText, axis: .vertical)
+                            .lineLimit(1...5)
+                            .foregroundColor(.white)
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 16)
+                        
+                        HStack(spacing: 12) {
+                            if inputText.isEmpty {
+                                Image(systemName: "arrow.down.circle")
+                                    .font(.title2)
+                                    .foregroundColor(.gray)
+                                
+                                Image(systemName: "mic.fill")
+                                    .font(.title2)
+                                    .foregroundColor(.gray)
+                            } else {
+                                Button(action: { inputText = "" }) {
+                                    Image(systemName: "paperplane.fill")
+                                        .font(.system(size: 14, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .padding(10)
+                                        .background(Circle().fill(ChatChatUIConfig.Colors.brandGradient))
+                                }
+                            }
+                        }
+                        .padding(.trailing, 16)
+                        .padding(.bottom, inputText.isEmpty ? 12 : 6)
+                    }
+                    .background(ChatChatUIConfig.Dropdown.buttonBackground)
+                    .cornerRadius(24)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    
+                    Spacer()
+                }
+                .presentationDetents([.height(115)])
+                .presentationBackground(ChatChatUIConfig.Dropdown.buttonBackground)
+                .presentationBackgroundInteraction(
+                    .enabled(upThrough: .height(115))
+                )
+                .interactiveDismissDisabled()
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+            }
+    }
+}
