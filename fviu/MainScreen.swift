@@ -13,6 +13,7 @@ import SwiftUI
 
 struct MainScreen: View {
     @State private var navigateToChat = false
+    @State private var navigateToGenerate = false
 
     var body: some View {
         NavigationStack {
@@ -38,15 +39,16 @@ struct MainScreen: View {
                     .navigationDestination(isPresented: $navigateToChat) {
                         ChatScreen()
                     }
-                    
-                    HStack{
-                        Button(action: {}){
-                            VStack{
-                                
-                            }
-                            
-                        }
+                    .navigationDestination(isPresented: $navigateToGenerate) {
+                        GenerateVideoScreen()
                     }
+                    
+                    FeaturesView(
+                        generateAction: { navigateToGenerate = true },
+                        fixAction: {},
+                        summarizeAction: {}
+                    )
+                    .padding()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -61,7 +63,4 @@ struct MainScreen: View {
         }
     }
 }
-
-
-
 
