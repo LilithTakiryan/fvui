@@ -38,6 +38,15 @@ struct MainScreen: View {
                     .navigationDestination(isPresented: $navigateToChat) {
                         ChatScreen()
                     }
+                    
+                    HStack{
+                        Button(action: {}){
+                            VStack{
+                                
+                            }
+                            
+                        }
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
