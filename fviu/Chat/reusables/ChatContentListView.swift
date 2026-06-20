@@ -13,7 +13,7 @@ struct ChatMessage: Identifiable {
     let isFromCurrentUser: Bool
 }
 
-struct ChatContentList: View {
+struct ChatContentListView: View {
     var viewModel: ChatViewModel  
     
     var body: some View {

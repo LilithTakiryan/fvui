@@ -9,24 +9,16 @@
 import SwiftUI
 
 #Preview {
-        VStack(spacing: 24) {
-            OpenChatButton(action: {
-                print("Button tapped")
-            })
-            ChatHistoryItem(action: {
-                print("Button tapped")
-            },
-            summary: "Summary title texting longe text to see how it wraps and looks",
-            time: "13:45 AM"
-            )
-            ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
-       
-                    ReceiverChatBubble(messageText: "hi")
-                    GradientChatBubble(text: "hi")
-             TypingIndicatorView()
-            }
-    
+    VStack(spacing: 24) {
+        OpenChatButton(action: {})
+        ChatHistoryItem(action: {},summary: "Summary title texting longe text to see how it wraps and looks",time: "13:45 AM")
+        ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
+        ReceiverChatBubble(messageText: "hi")
+        GradientChatBubble(text: "hi")
+        TypingIndicatorView()
+    }
 }
+
 
 
 
@@ -152,7 +144,6 @@ struct TypingIndicatorView: View {
 
 
 
-import SwiftUI
 
 extension View {
     func brandCardStyle(cornerRadius: CGFloat = 20, isSelected: Bool = true) -> some View {
@@ -217,49 +208,36 @@ struct OpenChatButton: View {
         }
     }
 }
-
 struct ChatHistoryItem: View {
     var action: () -> Void
     var summary: String
     var time: String
-    
     var body: some View {
-        ZStack {
+        HStack(spacing: 12) {
+            Image(.twoSparkles)
+                .font(.system(size: 20, weight: .medium))
             
-            Button(action: action) {
-                HStack(spacing: 12) {
-                    
-                    Image(.twoSparkles)
-                        .font(.system(size: 20, weight: .medium))
-                    
-                    
-                    VStack(alignment: .leading){
-                        Text(summary)
-                            .font(.system(size: 16))
-                            .foregroundColor(.white)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-
-                            
-                        Text(time)
-                            .font(.system(size: 14))
-                            .foregroundColor(.gray)
-                    }
-                    
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 16)
-                .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(Color(red: 0.1, green: 0.08, blue: 0.12))
-                )
+            VStack(alignment: .leading, spacing: 4) { 
+                Text(summary)
+                    .font(.system(size: 16))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                
+                Text(time)
+                    .font(.system(size: 14))
+                    .foregroundColor(.gray)
             }
-            .buttonStyle(PlainButtonStyle())
-            .padding(.horizontal)
             
+            Spacer()
         }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                .fill(Color(red: 0.1, green: 0.08, blue: 0.12))
+        )
+        .padding(.horizontal, 16)
     }
 }
-
-
-

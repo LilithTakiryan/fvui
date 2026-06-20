@@ -6,7 +6,6 @@
 //
 import SwiftUI
 
-
 enum ChatChatUIConfig {
     enum Paywall {
         static let cardCornerRadius: CGFloat = 24

@@ -9,13 +9,12 @@ import SwiftUI
 
 struct ChatBottomInputField: View {
     @State private var inputText: String = ""
-    @State private var showBottomSheet: Bool = true
-    var viewModel: ChatViewModel
+    @State var viewModel: ChatViewModel
     
     var body: some View {
         Color.black
             .ignoresSafeArea()
-            .sheet(isPresented: $showBottomSheet) {
+            .sheet(isPresented: $viewModel.showBottomSheet) {
                 VStack {
                     HStack(alignment: .bottom) {
                         TextField("How can I help you?", text: $inputText, axis: .vertical)

@@ -20,7 +20,7 @@ struct ChatScreen: View {
             
             ScrollView {
                 VStack {
-                    ChatContentList(viewModel: viewModel)
+                    ChatContentListView(viewModel: viewModel)
                     ChatBottomInputField(viewModel: viewModel)
                 }
             }
@@ -60,16 +60,21 @@ struct ChatScreen: View {
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: ChatHistoryScreen()) {
-                    Image(.history)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.white)
-                }
-            }
+                            NavigationLink(destination: ChatHistoryScreen(viewModel: viewModel)) {
+                                Image(.history)
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(.white)
+                            }
+                        }
         }
         .onAppear {
             viewModel.initializeChat(chatID: "test-chat-id")
+            viewModel.showBottomSheet = true
         }
+        .onDisappear{
+            viewModel.showBottomSheet = false
+        }
+        .environment(viewModel)
     }
 }
