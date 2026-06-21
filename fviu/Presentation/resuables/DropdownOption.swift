@@ -5,7 +5,6 @@
 //  Created by lilit on 19.06.26.
 //
 
-
 import SwiftUI
 
 struct MediaSettingsSelectorView_Previews: PreviewProvider {
@@ -14,12 +13,11 @@ struct MediaSettingsSelectorView_Previews: PreviewProvider {
     }
 }
 
-
 struct DropdownOption: Identifiable, Equatable {
     let id = UUID()
     let label: String
     var icon: AnyView? = nil
-    
+
     static func == (lhs: DropdownOption, rhs: DropdownOption) -> Bool {
         lhs.label == rhs.label
     }
@@ -28,7 +26,7 @@ struct DropdownOption: Identifiable, Equatable {
 struct DropdownRow: View {
     let option: DropdownOption
     let isSelected: Bool
-    
+
     var body: some View {
         HStack {
             if isSelected {
@@ -40,15 +38,15 @@ struct DropdownRow: View {
                     .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .regular))
                     .foregroundColor(.white)
             }
-            
+
             Spacer()
-            
+
             if let icon = option.icon {
                 icon
                     .foregroundStyle(
-                        isSelected 
-                        ? AnyShapeStyle(ChatChatUIConfig.Colors.brandGradient)
-                        : AnyShapeStyle(Color.white)
+                        isSelected
+                            ? AnyShapeStyle(ChatChatUIConfig.Colors.brandGradient)
+                            : AnyShapeStyle(Color.white)
                     )
                     .opacity(isSelected ? 1.0 : 0.8)
             }
@@ -62,32 +60,32 @@ struct DropdownRow: View {
 struct MediaSettingsSelectorView: View {
     @State private var selectedRatio: String = "16:9"
     @State private var selectedQuality: String = "720p"
-    
+
     @State private var showRatioDropdown: Bool = false
     @State private var showQualityDropdown: Bool = false
-    
+
     var ratioOptions: [DropdownOption] {
         [
             DropdownOption(label: "16:9", icon: AnyView(RoundedRectangle(cornerRadius: 3).stroke(lineWidth: 2).frame(width: 24, height: 14))),
             DropdownOption(label: "9:16", icon: AnyView(RoundedRectangle(cornerRadius: 3).stroke(lineWidth: 2).frame(width: 14, height: 24))),
-            DropdownOption(label: "1:1", icon: AnyView(RoundedRectangle(cornerRadius: 3).stroke(lineWidth: 2).frame(width: 18, height: 18)))
+            DropdownOption(label: "1:1", icon: AnyView(RoundedRectangle(cornerRadius: 3).stroke(lineWidth: 2).frame(width: 18, height: 18))),
         ]
     }
-    
+
     let qualityOptions = [
         DropdownOption(label: "540p"),
         DropdownOption(label: "720p"),
         DropdownOption(label: "1080p"),
-        DropdownOption(label: "4K")
+        DropdownOption(label: "4K"),
     ]
-    
+
     var body: some View {
         ZStack {
             ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
-            
+
             VStack(spacing: 24) {
                 Spacer()
-                
+
                 VStack(spacing: 8) {
                     if showRatioDropdown {
                         VStack(spacing: 0) {
@@ -106,7 +104,7 @@ struct MediaSettingsSelectorView: View {
                         .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.Dropdown.cornerRadius))
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
-                    
+
                     Button(action: {
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
                             showRatioDropdown.toggle()
@@ -128,7 +126,7 @@ struct MediaSettingsSelectorView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                
+
                 VStack(spacing: 8) {
                     if showQualityDropdown {
                         VStack(spacing: 0) {
@@ -147,7 +145,7 @@ struct MediaSettingsSelectorView: View {
                         .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.Dropdown.cornerRadius))
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
-                    
+
                     Button(action: {
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
                             showQualityDropdown.toggle()
@@ -159,7 +157,7 @@ struct MediaSettingsSelectorView: View {
                                 .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .medium))
                                 .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
                             Spacer()
-                            
+
                             if selectedQuality == "720p" {
                                 Text(selectedQuality)
                                     .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .semibold))
@@ -176,7 +174,7 @@ struct MediaSettingsSelectorView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                
+
                 Spacer()
             }
             .padding(.horizontal, 24)

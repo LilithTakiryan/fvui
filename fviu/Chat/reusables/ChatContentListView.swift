@@ -1,5 +1,5 @@
 //
-//  ChatMessage.swift
+//  ChatContentListView.swift
 //  fviu
 //
 //  Created by lilit on 18.06.26.
@@ -14,8 +14,8 @@ struct ChatMessage: Identifiable {
 }
 
 struct ChatContentListView: View {
-    var viewModel: ChatViewModel  
-    
+    var viewModel: ChatViewModel
+
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
@@ -35,7 +35,7 @@ struct ChatContentListView: View {
                                 }
                             }
                         }
-                        
+
                         if viewModel.isAiThinking {
                             HStack {
                                 TypingIndicatorView()
@@ -51,8 +51,5 @@ struct ChatContentListView: View {
                 Spacer()
             }
         }
-       
     }
 }
-
-

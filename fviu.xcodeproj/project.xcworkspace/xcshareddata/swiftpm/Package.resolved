@@ -1,0 +1,24 @@
+{
+  "originHash" : "18422f6318a06564dacda514dc76e58ed25276665e1e5241ea316ef707facccf",
+  "pins" : [
+    {
+      "identity" : "apphudsdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apphud/ApphudSDK",
+      "state" : {
+        "revision" : "23c0de964ed7d2f6f9cda83efaa1a40acfb84359",
+        "version" : "4.2.3"
+      }
+    },
+    {
+      "identity" : "swiftformat",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nicklockwood/SwiftFormat",
+      "state" : {
+        "revision" : "a5fa7a6a57abeb834df1b3fa43ea9133137d5ade",
+        "version" : "0.61.1"
+      }
+    }
+  ],
+  "version" : 3
+}

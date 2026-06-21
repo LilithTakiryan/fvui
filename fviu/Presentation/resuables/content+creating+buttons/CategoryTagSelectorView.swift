@@ -5,14 +5,12 @@
 //  Created by lilit on 19.06.26.
 //
 
-
 import SwiftUI
 
 struct CategoryTagSelectorView: View {
-    
     let categories = ["Popular", "Funny", "Sad", "Trends"]
     @State private var selectedCategory: String = "Popular"
-    
+
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
@@ -30,7 +28,6 @@ struct CategoryTagSelectorView: View {
                             .background(
                                 Group {
                                     if selectedCategory == category {
-                                       
                                         Capsule()
                                             .fill(ChatChatUIConfig.Colors.brandGradient)
                                     } else {
@@ -51,7 +48,7 @@ struct CategoryTagSelectorView: View {
 #Preview {
     ZStack {
         ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
-        
+
         VStack {
             CategoryTagSelectorView()
         }

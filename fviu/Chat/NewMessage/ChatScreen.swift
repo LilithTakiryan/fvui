@@ -9,15 +9,16 @@ import SwiftUI
 #Preview {
     ChatScreen()
 }
+
 struct ChatScreen: View {
-    @StateObject private var viewModel = ChatViewModel()  
+    @StateObject private var viewModel = ChatViewModel()
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ZStack {
             Color.black
                 .ignoresSafeArea()
-            
+
             ScrollView {
                 VStack {
                     ChatContentListView(viewModel: viewModel)
@@ -39,18 +40,18 @@ struct ChatScreen: View {
                         .foregroundColor(.white)
                 }
             }
-            
+
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 12) {
                     Image(.chatIcon)
                         .resizable()
                         .frame(width: 32, height: 32)
-                    
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text("AI Chat")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-                        
+
                         Text(viewModel.customTodayString)
                             .font(.system(size: 13))
                             .foregroundColor(.white.opacity(0.4))
@@ -58,24 +59,23 @@ struct ChatScreen: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            
+
             ToolbarItem(placement: .navigationBarTrailing) {
-                            NavigationLink(destination: ChatHistoryScreen(viewModel: viewModel)) {
-                                Image(.history)
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                    .foregroundColor(.white)
-                            }
-                        }
+                NavigationLink(destination: ChatHistoryScreen(viewModel: viewModel)) {
+                    Image(.history)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.white)
+                }
+            }
         }
         .onAppear {
             viewModel.initializeChat(chatID: "test-chat-id")
             viewModel.showBottomSheet = true
         }
-        .onDisappear{
+        .onDisappear {
             viewModel.showBottomSheet = false
         }
         .environmentObject(viewModel)
     }
 }
-

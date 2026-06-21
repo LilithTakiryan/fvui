@@ -1,25 +1,25 @@
 //
-//  GradientBorderPlusButton.swift
+//  SquareMediaButtons.swift
 //  fviu
 //
 //  Created by lilit on 19.06.26.
 //
 
-
 import SwiftUI
 
 // MARK: - Updated Button Component
+
 struct GradientBorderPlusButton: View {
     enum ButtonState {
         case empty
         case loading
         case filled(image: Image)
     }
-    
+
     let state: ButtonState
     let action: () -> Void
     var onRemove: (() -> Void)? = nil
-    
+
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Group {
@@ -40,10 +40,9 @@ struct GradientBorderPlusButton: View {
                                 lineWidth: ChatChatUIConfig.SquareButton.borderLineWidth
                             )
                     )
-                    
+
                 case .loading:
                     ZStack {
-                    
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             .scaleEffect(1.2)
@@ -52,8 +51,7 @@ struct GradientBorderPlusButton: View {
                     .background(ChatChatUIConfig.Colors.receiverBubbleBg)
                     .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.SquareButton.cornerRadius))
 
-                    
-                case .filled(let image):
+                case let .filled(image):
                     Button(action: action) {
                         image
                             .resizable()
@@ -63,8 +61,7 @@ struct GradientBorderPlusButton: View {
                     .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.SquareButton.cornerRadius))
                 }
             }
-            
-            
+
             if case .filled = state {
                 Button(action: { onRemove?() }) {
                     Image(systemName: "xmark")
@@ -82,36 +79,31 @@ struct GradientBorderPlusButton: View {
     }
 }
 
-
 struct ReplaceButton: View {
     let action: () -> Void
-    
-    var body: some View {
 
-        Button(action:  action ) {
-                               HStack(spacing: 4) {
-                                   Image(systemName: "arrow.triangle.2.circlepath")
-                                   Text("Replace")
-                               }
-                               .font(.system(size: 14, weight: .medium))
-                               .foregroundColor(.white)
-                               .padding(.horizontal, 12)
-                               .padding(.vertical, 8)
-                               .background(.ultraThinMaterial) 
-                               .clipShape(Capsule())
-                           }
-                           .padding(16)
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 4) {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                Text("Replace")
+            }
+            .font(.system(size: 14, weight: .medium))
+            .foregroundColor(.white)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(.ultraThinMaterial)
+            .clipShape(Capsule())
+        }
+        .padding(16)
     }
 }
-
-
-
 
 struct GradientBorderPlusButton_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
             ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
-            
+
             VStack(spacing: 40) {
                 ReplaceButton(action: {
                     print("Replace tapped")
@@ -122,15 +114,14 @@ struct GradientBorderPlusButton_Previews: PreviewProvider {
                         .foregroundColor(.gray)
                     GradientBorderPlusButton(state: .empty, action: {})
                 }
-                
+
                 VStack(spacing: 8) {
                     Text("Loading State")
                         .font(.caption)
                         .foregroundColor(.gray)
                     GradientBorderPlusButton(state: .loading, action: {})
                 }
-                
-             
+
                 VStack(spacing: 8) {
                     Text("Filled State")
                         .font(.caption)
@@ -142,10 +133,7 @@ struct GradientBorderPlusButton_Previews: PreviewProvider {
                     )
                 }
             }
-           
         }
         .preferredColorScheme(.dark)
     }
 }
-
-

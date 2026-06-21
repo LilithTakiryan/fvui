@@ -29,27 +29,27 @@ struct ResultScreen: View {
             }
             .padding(.horizontal)
             .padding(.top, 8)
-            
+
             GeometryReader { geometry in
                 Image(.default)
                     .resizable()
-                    .aspectRatio(9/16, contentMode: .fill)
+                    .aspectRatio(9 / 16, contentMode: .fill)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .clipShape(RoundedRectangle(cornerRadius: 24))
                     .overlay(alignment: .topTrailing) {
                         ReplaceButton(action: {})
                     }
             }
-            .aspectRatio(9/16, contentMode: .fit)
-            .padding(.horizontal, 16) 
+            .aspectRatio(9 / 16, contentMode: .fit)
+            .padding(.horizontal, 16)
             HStack(spacing: 12) {
-                Button("Share") { }
+                Button("Share") {}
                     .buttonStyle(CustomCapsuleButtonStyle(
                         background: ChatChatUIConfig.Colors.receiverBubbleBg,
                         verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding + 4
                     ))
-                
-                Button("Download") { }
+
+                Button("Download") {}
                     .buttonStyle(CustomCapsuleButtonStyle(
                         background: ChatChatUIConfig.Colors.brandGradient,
                         verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding,

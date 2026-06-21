@@ -9,7 +9,7 @@ import SwiftUI
 struct GradientText: View {
     var text: String
     var font: Font = .system(size: 32, weight: .bold, design: .default)
-    
+
     var body: some View {
         Text(text)
             .font(font)
@@ -28,4 +28,3 @@ struct GradientText: View {
         text: "Welcome to the team, Alexander!"
     )
 }
-

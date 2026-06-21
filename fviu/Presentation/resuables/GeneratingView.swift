@@ -13,7 +13,7 @@ import SwiftUI
 
 struct GeneratingView: View {
     var body: some View {
-        VStack{
+        VStack {
             Image(.generating)
             Text("Generating...")
                 .font(.system(size: 20, weight: .medium))
@@ -22,7 +22,5 @@ struct GeneratingView: View {
                 .font(.system(size: 16, weight: .light))
                 .foregroundStyle(.secondary)
         }
-
     }
 }
-

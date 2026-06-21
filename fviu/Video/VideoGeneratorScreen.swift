@@ -5,11 +5,10 @@
 //  Created by lilit on 21.06.26.
 //
 
-
-import SwiftUI
-import Photos
-import AVKit
 import AVFoundation
+import AVKit
+import Photos
+import SwiftUI
 
 #Preview {
     VideoGeneratorScreen()
@@ -21,24 +20,24 @@ struct VideoGeneratorScreen: View {
     @State private var showPermissionAlert = false
     @Environment(\.dismiss) var dismiss
     @Environment(\.scenePhase) var scenePhase
-    
+
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            
+
             VStack(spacing: 16) {
                 if viewModel.isGenerating {
                     GeneratingView()
-                }
-                else if let status = viewModel.status,
-                        status.status.lowercased() == "completed",
-                        let urlString = status.video_url,
-                        let url = URL(string: urlString) {
+                } else if let status = viewModel.status,
+                          status.status.lowercased() == "completed",
+                          let urlString = status.video_url,
+                          let url = URL(string: urlString)
+                {
                     VStack(spacing: 16) {
                         VideoPlayer(player: AVPlayer(url: url))
                             .frame(height: 300)
                             .cornerRadius(12)
-                        
+
                         HStack(spacing: 12) {
                             Button(action: {
                                 if let urlString = viewModel.status?.video_url, let videoURL = URL(string: urlString) {
@@ -51,7 +50,7 @@ struct VideoGeneratorScreen: View {
                                 background: ChatChatUIConfig.Colors.receiverBubbleBg,
                                 verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding + 4
                             ))
-                            
+
                             Button(action: {
                                 Task {
                                     await viewModel.downloadVideo()
@@ -74,7 +73,7 @@ struct VideoGeneratorScreen: View {
                         }
                         .padding(.horizontal)
                         .padding(.bottom, 8)
-                        
+
                         if viewModel.localVideoURL != nil {
                             HStack {
                                 Image(systemName: "checkmark.circle.fill")
@@ -87,26 +86,24 @@ struct VideoGeneratorScreen: View {
                             .background(Color.green.opacity(0.1))
                             .cornerRadius(8)
                         }
-                        
-                        
+
                         Spacer()
                     }
                     .padding(16)
-                }
-                else {
+                } else {
                     VStack(spacing: 16) {
                         Text("Create AI Video")
                             .font(.system(size: 24, weight: .bold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        
+
                         TextEditor(text: $inputText)
                             .frame(minHeight: 120)
                             .padding(8)
                             .background(Color(.systemGray6))
                             .foregroundColor(.white)
                             .cornerRadius(8)
-                        
+
                         if let error = viewModel.error {
                             HStack {
                                 Image(systemName: "exclamationmark.circle.fill")
@@ -119,7 +116,7 @@ struct VideoGeneratorScreen: View {
                             .background(Color.red.opacity(0.1))
                             .cornerRadius(8)
                         }
-                        
+
                         Button(action: {
                             Task { await checkPhotoPermission() }
                         }) {
@@ -131,7 +128,7 @@ struct VideoGeneratorScreen: View {
                                 .cornerRadius(8)
                         }
                         .disabled(inputText.isEmpty || viewModel.isGenerating)
-                        
+
                         Spacer()
                     }
                     .padding(16)
@@ -154,12 +151,10 @@ struct VideoGeneratorScreen: View {
             }
         }
     }
-    
 
-    
     private func checkPhotoPermission() async {
         let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-        
+
         switch status {
         case .authorized, .limited:
             await viewModel.generateVideo(prompt: inputText)
@@ -171,17 +166,17 @@ struct VideoGeneratorScreen: View {
             await viewModel.generateVideo(prompt: inputText)
         }
     }
-    
+
     private func requestPhotoPermission() async {
         let newStatus = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-        
+
         if newStatus == .authorized || newStatus == .limited {
             await viewModel.generateVideo(prompt: inputText)
         } else {
             showPermissionAlert = true
         }
     }
-    
+
     private func checkPhotoPermissionOnReturn() {
         let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         if status == .authorized || status == .limited {
@@ -189,23 +184,24 @@ struct VideoGeneratorScreen: View {
             showPermissionAlert = false
         }
     }
-    
+
     private func shareVideo(url: URL) {
         let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        
+
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first,
-              let rootViewController = window.rootViewController else {
+              let rootViewController = window.rootViewController
+        else {
             return
         }
-        
+
         rootViewController.present(activityVC, animated: true)
     }
+
     private func openCurrentAppSettings() {
         guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
         if UIApplication.shared.canOpenURL(settingsUrl) {
             UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
         }
     }
-    
 }

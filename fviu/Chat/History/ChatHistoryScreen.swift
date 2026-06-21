@@ -12,7 +12,7 @@ struct ChatHistoryScreen: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            
+
             if viewModel.isLoadingChats {
                 ProgressView()
                     .tint(.white)
@@ -27,7 +27,7 @@ struct ChatHistoryScreen: View {
                                     .font(.system(size: 16, weight: .semibold))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 16)
-                                
+
                                 ForEach(viewModel.groupedChats[date] ?? [], id: \.id) { chat in
                                     NavigationLink(destination: ChatScreen()) {
                                         ChatHistoryItem(
@@ -36,7 +36,7 @@ struct ChatHistoryScreen: View {
                                             time: formatTime(chat.updated_at)
                                         )
                                     }
-                                    .buttonStyle(PlainButtonStyle()) 
+                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                         }

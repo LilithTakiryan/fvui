@@ -8,11 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		13133A012FE7BB4700C3D956 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 13133A002FE7BB4700C3D956 /* Settings.bundle */; };
+		13133A042FE818EE00C3D956 /* ApphudSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 13133A032FE818EE00C3D956 /* ApphudSDK */; };
+		13133A0A2FE83E0F00C3D956 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 13133A092FE83E0F00C3D956 /* Products.storekit */; };
+		13133A0D2FE871DF00C3D956 /* SwiftFormat in Frameworks */ = {isa = PBXBuildFile; productRef = 13133A0C2FE871DF00C3D956 /* SwiftFormat */; };
 		1354C8382FE705E2005EB513 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1354C8372FE705E2005EB513 /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		13133A002FE7BB4700C3D956 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		13133A092FE83E0F00C3D956 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		1354C8372FE705E2005EB513 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		136E0CE62FE3F621003EC773 /* fviu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fviu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -43,6 +47,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13133A042FE818EE00C3D956 /* ApphudSDK in Frameworks */,
+				13133A0D2FE871DF00C3D956 /* SwiftFormat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +58,7 @@
 		136E0CDD2FE3F621003EC773 = {
 			isa = PBXGroup;
 			children = (
+				13133A092FE83E0F00C3D956 /* Products.storekit */,
 				13133A002FE7BB4700C3D956 /* Settings.bundle */,
 				1354C8372FE705E2005EB513 /* Config.xcconfig */,
 				136E0CE82FE3F621003EC773 /* fviu */,
@@ -87,6 +94,8 @@
 			);
 			name = fviu;
 			packageProductDependencies = (
+				13133A032FE818EE00C3D956 /* ApphudSDK */,
+				13133A0C2FE871DF00C3D956 /* SwiftFormat */,
 			);
 			productName = fviu;
 			productReference = 136E0CE62FE3F621003EC773 /* fviu.app */;
@@ -116,6 +125,10 @@
 			);
 			mainGroup = 136E0CDD2FE3F621003EC773;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				13133A022FE818EE00C3D956 /* XCRemoteSwiftPackageReference "ApphudSDK" */,
+				13133A0B2FE871DF00C3D956 /* XCRemoteSwiftPackageReference "SwiftFormat" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 136E0CE72FE3F621003EC773 /* Products */;
 			projectDirPath = "";
@@ -132,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13133A012FE7BB4700C3D956 /* Settings.bundle in Resources */,
+				13133A0A2FE83E0F00C3D956 /* Products.storekit in Resources */,
 				1354C8382FE705E2005EB513 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -364,6 +378,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		13133A022FE818EE00C3D956 /* XCRemoteSwiftPackageReference "ApphudSDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apphud/ApphudSDK";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.3;
+			};
+		};
+		13133A0B2FE871DF00C3D956 /* XCRemoteSwiftPackageReference "SwiftFormat" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nicklockwood/SwiftFormat";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.61.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		13133A032FE818EE00C3D956 /* ApphudSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 13133A022FE818EE00C3D956 /* XCRemoteSwiftPackageReference "ApphudSDK" */;
+			productName = ApphudSDK;
+		};
+		13133A0C2FE871DF00C3D956 /* SwiftFormat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 13133A0B2FE871DF00C3D956 /* XCRemoteSwiftPackageReference "SwiftFormat" */;
+			productName = SwiftFormat;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 136E0CDE2FE3F621003EC773 /* Project object */;
 }

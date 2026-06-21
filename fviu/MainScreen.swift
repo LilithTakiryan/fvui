@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  MainScreen.swift
 //  fviu
 //
 //  Created by lilit on 18.06.26.
@@ -23,7 +23,7 @@ struct MainScreen: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 VStack {
                     Image(.sparkles)
                         .frame(width: 60, height: 60)
@@ -42,7 +42,7 @@ struct MainScreen: View {
                     .navigationDestination(isPresented: $navigateToGenerate) {
                         VideoGeneratorScreen()
                     }
-                    
+
                     FeaturesView(
                         generateAction: { navigateToGenerate = true },
                         fixAction: {},
@@ -63,4 +63,3 @@ struct MainScreen: View {
         }
     }
 }
-

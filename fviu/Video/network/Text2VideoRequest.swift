@@ -5,7 +5,6 @@
 //  Created by lilit on 21.06.26.
 //
 
-
 import Foundation
 
 struct Text2VideoRequest: Codable {
@@ -14,7 +13,7 @@ struct Text2VideoRequest: Codable {
     let model: String?
     let quality: String?
     let aspect_ratio: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case prompt
         case duration
@@ -24,19 +23,19 @@ struct Text2VideoRequest: Codable {
     }
 }
 
-struct Text2VideoResponse: Decodable, Sendable {
+struct Text2VideoResponse: Decodable {
     let video_id: Int
     let detail: String
 }
 
-struct VideoStatusResponse: Decodable, Sendable {
+struct VideoStatusResponse: Decodable {
     let video_id: Int?
     let status: String
     let video_url: String?
     let error: String?
-    
+
     init(id: Int?, status: String, video_url: String?, error: String?) {
-        self.video_id = id
+        video_id = id
         self.status = status
         self.video_url = video_url
         self.error = error

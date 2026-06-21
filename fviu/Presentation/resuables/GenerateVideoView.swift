@@ -5,19 +5,17 @@
 //  Created by lilit on 20.06.26.
 //
 
-
-
 import SwiftUI
 
 #Preview {
     ZStack {
         Color.black.ignoresSafeArea()
         FeaturesView(
-            generateAction: {}
-            , fixAction: {}
-            , summarizeAction: {}
+            generateAction: {},
+            fixAction: {},
+            summarizeAction: {}
         )
-            .padding()
+        .padding()
     }
 }
 
@@ -25,16 +23,16 @@ struct FeaturesView: View {
     let generateAction: () -> Void
     let fixAction: () -> Void
     let summarizeAction: () -> Void
-    
+
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             GenerateVideoView(action: generateAction)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
+
             VStack(spacing: 12) {
                 FeatureFixWritingButton(action: fixAction)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                
+
                 FeatureUnderstandFasterButton(action: summarizeAction)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -82,18 +80,18 @@ struct GenerateVideoView: View {
                     .padding(12)
                     .background(.white.opacity(0.15))
                     .clipShape(Circle())
-                
+
                 Text("Turn Photo\ninto Video")
                     .font(.system(size: 22, weight: .bold))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.leading)
-                
+
                 Text("Animate • Templates")
                     .font(.system(size: 14))
                     .foregroundColor(.white.opacity(0.7))
-                
+
                 Spacer(minLength: 24)
-                
+
                 HStack(spacing: 6) {
                     Text("Ready in seconds")
                         .font(.system(size: 13, weight: .medium))
@@ -123,7 +121,7 @@ struct ReusableMenuButton: View {
     let systemIcon: ImageResource
     let title: String
     let description: String
-    
+
     var body: some View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 10) {
@@ -133,15 +131,15 @@ struct ReusableMenuButton: View {
                     .padding(12)
                     .background(.white.opacity(0.1))
                     .clipShape(Circle())
-                
+
                 Spacer(minLength: 8)
-                
+
                 Text(title)
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
-                
+
                 Text(description)
                     .font(.system(size: 13))
                     .foregroundColor(.white.opacity(0.5))
