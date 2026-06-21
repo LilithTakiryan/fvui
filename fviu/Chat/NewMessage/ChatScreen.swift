@@ -10,7 +10,7 @@ import SwiftUI
     ChatScreen()
 }
 struct ChatScreen: View {
-    @State private var viewModel = ChatViewModel()  
+    @StateObject private var viewModel = ChatViewModel()  
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -75,6 +75,7 @@ struct ChatScreen: View {
         .onDisappear{
             viewModel.showBottomSheet = false
         }
-        .environment(viewModel)
+        .environmentObject(viewModel)
     }
 }
+

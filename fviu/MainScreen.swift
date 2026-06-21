@@ -40,7 +40,7 @@ struct MainScreen: View {
                         ChatScreen()
                     }
                     .navigationDestination(isPresented: $navigateToGenerate) {
-                        GenerateVideoScreen()
+                        VideoGeneratorScreen()
                     }
                     
                     FeaturesView(

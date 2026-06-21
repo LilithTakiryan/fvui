@@ -5,19 +5,14 @@
 //  Created by lilit on 19.06.26.
 //
 import Foundation
-import Observation
-
-import Foundation
-import Observation
+import Combine
 import os
 
 
-
 @MainActor
-@Observable
-final class ChatViewModel: Sendable {
+final class ChatViewModel: ObservableObject, Sendable {
     private let logger = Logger(subsystem: "com.chat", category: "ViewModel")
-    var showBottomSheet: Bool = true
+    @Published var showBottomSheet: Bool = true
 
     var todayDateString: String {
         Date().formatted(date: .abbreviated, time: .omitted)
@@ -29,12 +24,12 @@ final class ChatViewModel: Sendable {
         return formatter.string(from: Date())
     }
     
-    var messages: [ChatMessage] = []
-    var isAiThinking = false
-    var error: String?
+    @Published var messages: [ChatMessage] = []
+    @Published var isAiThinking = false
+    @Published var error: String?
     
-    var chats: [DolaChatItem] = []
-    var isLoadingChats = false
+    @Published var chats: [DolaChatItem] = []
+    @Published var isLoadingChats = false
     
     private let networkService: ChatNetworkService
     private var chatID: String = ""
@@ -159,3 +154,4 @@ final class ChatViewModel: Sendable {
         return formatter.string(from: date)
     }
 }
+
