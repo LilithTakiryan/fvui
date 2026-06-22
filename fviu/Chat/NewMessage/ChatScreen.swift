@@ -52,7 +52,13 @@ struct ChatScreen: View {
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
 
-                        Text(viewModel.customTodayString)
+                        Text(Date().formatted(
+                            .dateTime
+                            .day(.twoDigits)
+                            .month(.twoDigits)
+                            .year(.defaultDigits)
+                            .locale(Locale(identifier: "de_DE")) 
+                        ))
                             .font(.system(size: 13))
                             .foregroundColor(.white.opacity(0.4))
                     }

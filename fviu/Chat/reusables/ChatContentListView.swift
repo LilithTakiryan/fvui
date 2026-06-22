@@ -6,12 +6,12 @@
 //
 
 import SwiftUI
-
-struct ChatMessage: Identifiable {
-    let id = UUID()
-    let text: String
-    let isFromCurrentUser: Bool
-}
+//
+//struct ChatMessage: Identifiable {
+//    let id = UUID()
+//    let text: String
+//    let isFromCurrentUser: Bool
+//}
 
 struct ChatContentListView: View {
     @ObservedObject var  viewModel: ChatViewModel
