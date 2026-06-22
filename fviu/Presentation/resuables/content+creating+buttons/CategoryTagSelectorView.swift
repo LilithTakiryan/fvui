@@ -29,10 +29,10 @@ struct CategoryTagSelectorView: View {
                                 Group {
                                     if selectedCategory == category {
                                         Capsule()
-                                            .fill(ChatChatUIConfig.Colors.brandGradient)
+                                            .fill(CustomConstants.Colors.brandGradient)
                                     } else {
                                         Capsule()
-                                            .fill(ChatChatUIConfig.Dropdown.buttonBackground)
+                                            .fill(CustomConstants.Dropdown.buttonBackground)
                                     }
                                 }
                             )
@@ -41,13 +41,13 @@ struct CategoryTagSelectorView: View {
             }
             .padding(.horizontal, 20)
         }
-        .background(ChatChatUIConfig.Colors.backgroundDeep)
+        .background(CustomConstants.Colors.backgroundDeep)
     }
 }
 
 #Preview {
     ZStack {
-        ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
+        CustomConstants.Colors.backgroundDeep.ignoresSafeArea()
 
         VStack {
             CategoryTagSelectorView()

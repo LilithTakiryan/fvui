@@ -45,14 +45,14 @@ struct ResultScreen: View {
             HStack(spacing: 12) {
                 Button("Share") {}
                     .buttonStyle(CustomCapsuleButtonStyle(
-                        background: ChatChatUIConfig.Colors.receiverBubbleBg,
-                        verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding + 4
+                        background: CustomConstants.Colors.receiverBubbleBg,
+                        verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding + 4
                     ))
 
                 Button("Download") {}
                     .buttonStyle(CustomCapsuleButtonStyle(
-                        background: ChatChatUIConfig.Colors.brandGradient,
-                        verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding,
+                        background: CustomConstants.Colors.brandGradient,
+                        verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
                         isScaled: true
                     ))
             }

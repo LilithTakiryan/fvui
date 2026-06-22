@@ -38,7 +38,7 @@ struct ChatBottomInputField: View {
                                         .font(.system(size: 14, weight: .bold))
                                         .foregroundColor(.white)
                                         .padding(10)
-                                        .background(Circle().fill(ChatChatUIConfig.Colors.brandGradient))
+                                        .background(Circle().fill(CustomConstants.Colors.brandGradient))
                                 }
                                 .disabled(viewModel.isAiThinking)
                             }
@@ -46,7 +46,7 @@ struct ChatBottomInputField: View {
                         .padding(.trailing, 16)
                         .padding(.bottom, inputText.isEmpty ? 12 : 6)
                     }
-                    .background(ChatChatUIConfig.Dropdown.buttonBackground)
+                    .background(CustomConstants.Dropdown.buttonBackground)
                     .cornerRadius(24)
                     .padding(.horizontal)
                     .padding(.top, 8)
@@ -54,7 +54,7 @@ struct ChatBottomInputField: View {
                     Spacer()
                 }
                 .presentationDetents([.height(115)])
-                .presentationBackground(ChatChatUIConfig.Dropdown.buttonBackground)
+                .presentationBackground(CustomConstants.Dropdown.buttonBackground)
                 .presentationBackgroundInteraction(
                     .enabled(upThrough: .height(115))
                 )

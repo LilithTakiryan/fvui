@@ -37,7 +37,7 @@ struct PaywallScreen: View {
 
     var body: some View {
         ZStack {
-            ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
+            CustomConstants.Colors.backgroundDeep.ignoresSafeArea()
 
             if subManager.isLoading {
                 ProgressView()
@@ -150,7 +150,7 @@ struct PaywallScreen: View {
 
                 Text(option.fullPrice)
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
+                    .foregroundColor(CustomConstants.Paywall.subTextColor)
             }
 
             Spacer()
@@ -161,7 +161,7 @@ struct PaywallScreen: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .background(ChatChatUIConfig.Colors.brandGradient)
+                    .background(CustomConstants.Colors.brandGradient)
                     .clipShape(Capsule())
             }
         }
@@ -181,7 +181,7 @@ struct PaywallScreen: View {
             Text("Cancel anytime")
         }
         .font(.system(size: 15, weight: .medium))
-        .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
+        .foregroundColor(CustomConstants.Paywall.subTextColor)
     }
 
     private var actionButton: some View {
@@ -199,8 +199,8 @@ struct PaywallScreen: View {
             Text("Unlock now")
         }
         .buttonStyle(CustomCapsuleButtonStyle(
-            background: ChatChatUIConfig.Colors.brandGradient,
-            verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding,
+            background: CustomConstants.Colors.brandGradient,
+            verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
             isScaled: true
         ))
     }
@@ -227,7 +227,7 @@ struct PaywallScreen: View {
             Text("Terms of use")
         }
         .font(.system(size: 14, weight: .medium))
-        .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
+        .foregroundColor(CustomConstants.Paywall.subTextColor)
         .padding(.horizontal, 10)
     }
 

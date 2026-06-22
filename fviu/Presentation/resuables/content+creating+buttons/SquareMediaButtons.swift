@@ -27,15 +27,15 @@ struct GradientBorderPlusButton: View {
                         Image(systemName: "plus")
                             .font(.system(size: 22, weight: .medium))
                             .foregroundColor(.white)
-                            .frame(width: ChatChatUIConfig.SquareButton.size, height: ChatChatUIConfig.SquareButton.size)
+                            .frame(width: CustomConstants.SquareButton.size, height: CustomConstants.SquareButton.size)
                     }
-                    .background(ChatChatUIConfig.Colors.receiverBubbleBg)
-                    .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.SquareButton.cornerRadius))
+                    .background(CustomConstants.Colors.receiverBubbleBg)
+                    .clipShape(RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius))
                     .overlay(
-                        RoundedRectangle(cornerRadius: ChatChatUIConfig.SquareButton.cornerRadius)
+                        RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius)
                             .stroke(
-                                ChatChatUIConfig.Colors.brandGradient,
-                                lineWidth: ChatChatUIConfig.SquareButton.borderLineWidth
+                                CustomConstants.Colors.brandGradient,
+                                lineWidth: CustomConstants.SquareButton.borderLineWidth
                             )
                     )
 
@@ -45,18 +45,18 @@ struct GradientBorderPlusButton: View {
                             .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             .scaleEffect(1.2)
                     }
-                    .frame(width: ChatChatUIConfig.SquareButton.size, height: ChatChatUIConfig.SquareButton.size)
-                    .background(ChatChatUIConfig.Colors.receiverBubbleBg)
-                    .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.SquareButton.cornerRadius))
+                    .frame(width: CustomConstants.SquareButton.size, height: CustomConstants.SquareButton.size)
+                    .background(CustomConstants.Colors.receiverBubbleBg)
+                    .clipShape(RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius))
 
                 case let .filled(image):
                     Button(action: action) {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: ChatChatUIConfig.SquareButton.size, height: ChatChatUIConfig.SquareButton.size)
+                            .frame(width: CustomConstants.SquareButton.size, height: CustomConstants.SquareButton.size)
                     }
-                    .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.SquareButton.cornerRadius))
+                    .clipShape(RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius))
                 }
             }
 
@@ -64,7 +64,7 @@ struct GradientBorderPlusButton: View {
                 Button(action: { onRemove?() }) {
                     Image(systemName: "xmark")
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(ChatChatUIConfig.Colors.brandGradient)
+                        .foregroundStyle(CustomConstants.Colors.brandGradient)
                         .frame(width: 22, height: 22)
                         .background(Color.white)
                         .clipShape(Circle())
@@ -73,7 +73,7 @@ struct GradientBorderPlusButton: View {
                 .offset(x: 6, y: -6)
             }
         }
-        .frame(width: ChatChatUIConfig.SquareButton.size + 12, height: ChatChatUIConfig.SquareButton.size + 12)
+        .frame(width: CustomConstants.SquareButton.size + 12, height: CustomConstants.SquareButton.size + 12)
     }
 }
 
@@ -100,7 +100,7 @@ struct ReplaceButton: View {
 struct GradientBorderPlusButton_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
-            ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
+            CustomConstants.Colors.backgroundDeep.ignoresSafeArea()
 
             VStack(spacing: 40) {
                 ReplaceButton(action: {

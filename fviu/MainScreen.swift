@@ -27,7 +27,7 @@ struct MainScreen: View {
                 VStack {
                     Image(.sparkles)
                         .frame(width: 60, height: 60)
-                    Text("Your AI tools ready to go")
+                    Text(.labelMainTools)
                         .foregroundColor(.white)
                         .font(.system(size: 24, weight: .bold))
                         .multilineTextAlignment(.center)

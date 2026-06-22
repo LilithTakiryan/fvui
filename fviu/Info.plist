@@ -8,7 +8,7 @@
 	<string>$(PAYMENT_TOKEN)</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Inter-VariableFont_opsz,wght</string>
+	    <string>Inter-VariableFont_opsz,wght.ttf</string>
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to your photo library so you can select and upload photos to your profile.</string>

@@ -11,7 +11,7 @@ import SwiftUI
     VStack(spacing: 24) {
         OpenChatButton(action: {})
         ChatHistoryItem(action: {}, summary: "Summary title texting longe text to see how it wraps and looks", time: "13:45 AM")
-        ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
+        CustomConstants.Colors.backgroundDeep.ignoresSafeArea()
         ReceiverChatBubble(messageText: "hi")
         GradientChatBubble(text: "hi")
         TypingIndicatorView()
@@ -31,7 +31,7 @@ struct CustomCapsuleButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .semibold))
+            .font(.system(size: CustomConstants.Sizes.mainButtonFontSize, weight: .semibold))
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, verticalPadding)
@@ -51,7 +51,7 @@ struct ChatBubbleShape: Shape {
             byRoundingCorners: isFromCurrentUser ?
                 [.topLeft, .topRight, .bottomLeft] :
                 [.topLeft, .topRight, .bottomRight],
-            cornerRadii: CGSize(width: ChatChatUIConfig.CornerRadii.defaultBubbleRadius, height: ChatChatUIConfig.CornerRadii.defaultBubbleRadius)
+            cornerRadii: CGSize(width: CustomConstants.CornerRadii.defaultBubbleRadius, height: CustomConstants.CornerRadii.defaultBubbleRadius)
         )
         return Path(path.cgPath)
     }
@@ -62,14 +62,14 @@ struct GradientChatBubble: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: ChatChatUIConfig.Sizes.bubbleFontSize, weight: .regular))
+            .font(.system(size: CustomConstants.Sizes.bubbleFontSize, weight: .regular))
             .foregroundColor(.white)
-            .lineSpacing(ChatChatUIConfig.Sizes.bubbleLineSpacing)
+            .lineSpacing(CustomConstants.Sizes.bubbleLineSpacing)
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
-            .background(ChatChatUIConfig.Colors.brandGradient)
+            .background(CustomConstants.Colors.brandGradient)
             .clipShape(ChatBubbleShape(isFromCurrentUser: true))
-            .frame(maxWidth: ChatChatUIConfig.Sizes.maxBubbleWidth, alignment: .trailing)
+            .frame(maxWidth: CustomConstants.Sizes.maxBubbleWidth, alignment: .trailing)
     }
 }
 
@@ -78,21 +78,21 @@ struct ReceiverChatBubble: View {
 
     var body: some View {
         Text(messageText)
-            .font(.system(size: ChatChatUIConfig.Sizes.bubbleFontSize, weight: .regular))
+            .font(.system(size: CustomConstants.Sizes.bubbleFontSize, weight: .regular))
             .foregroundColor(.white)
-            .lineSpacing(ChatChatUIConfig.Sizes.bubbleLineSpacing)
+            .lineSpacing(CustomConstants.Sizes.bubbleLineSpacing)
             .padding(.horizontal, 18)
             .padding(.vertical, 14)
-            .background(ChatChatUIConfig.Colors.receiverBubbleBg)
+            .background(CustomConstants.Colors.receiverBubbleBg)
             .clipShape(
                 UnevenRoundedRectangle(
-                    topLeadingRadius: ChatChatUIConfig.CornerRadii.defaultBubbleRadius,
+                    topLeadingRadius: CustomConstants.CornerRadii.defaultBubbleRadius,
                     bottomLeadingRadius: 0,
-                    bottomTrailingRadius: ChatChatUIConfig.CornerRadii.defaultBubbleRadius,
-                    topTrailingRadius: ChatChatUIConfig.CornerRadii.defaultBubbleRadius
+                    bottomTrailingRadius: CustomConstants.CornerRadii.defaultBubbleRadius,
+                    topTrailingRadius: CustomConstants.CornerRadii.defaultBubbleRadius
                 )
             )
-            .frame(maxWidth: ChatChatUIConfig.Sizes.maxBubbleWidth, alignment: .leading)
+            .frame(maxWidth: CustomConstants.Sizes.maxBubbleWidth, alignment: .leading)
     }
 }
 
@@ -102,32 +102,32 @@ struct TypingIndicatorView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 10) {
             Circle()
-                .fill(ChatChatUIConfig.Colors.brandGradient)
-                .frame(width: ChatChatUIConfig.Sizes.indicatorDotLarge, height: ChatChatUIConfig.Sizes.indicatorDotLarge)
+                .fill(CustomConstants.Colors.brandGradient)
+                .frame(width: CustomConstants.Sizes.indicatorDotLarge, height: CustomConstants.Sizes.indicatorDotLarge)
                 .scaleEffect(isAnimating ? 1.15 : 0.85)
                 .animation(.easeInOut(duration: 0.5).repeatForever().delay(0), value: isAnimating)
 
             Circle()
-                .fill(ChatChatUIConfig.Colors.inactiveDotBg)
-                .frame(width: ChatChatUIConfig.Sizes.indicatorDotMedium, height: ChatChatUIConfig.Sizes.indicatorDotMedium)
+                .fill(CustomConstants.Colors.inactiveDotBg)
+                .frame(width: CustomConstants.Sizes.indicatorDotMedium, height: CustomConstants.Sizes.indicatorDotMedium)
                 .scaleEffect(isAnimating ? 1.15 : 0.85)
                 .animation(.easeInOut(duration: 0.5).repeatForever().delay(0.15), value: isAnimating)
 
             Circle()
-                .fill(ChatChatUIConfig.Colors.inactiveDotBg)
-                .frame(width: ChatChatUIConfig.Sizes.indicatorDotSmall, height: ChatChatUIConfig.Sizes.indicatorDotSmall)
+                .fill(CustomConstants.Colors.inactiveDotBg)
+                .frame(width: CustomConstants.Sizes.indicatorDotSmall, height: CustomConstants.Sizes.indicatorDotSmall)
                 .scaleEffect(isAnimating ? 1.15 : 0.85)
                 .animation(.easeInOut(duration: 0.5).repeatForever().delay(0.3), value: isAnimating)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
-        .background(ChatChatUIConfig.Colors.receiverBubbleBg)
+        .background(CustomConstants.Colors.receiverBubbleBg)
         .clipShape(
             UnevenRoundedRectangle(
-                topLeadingRadius: ChatChatUIConfig.CornerRadii.indicatorBubbleRadius,
+                topLeadingRadius: CustomConstants.CornerRadii.indicatorBubbleRadius,
                 bottomLeadingRadius: 0,
-                bottomTrailingRadius: ChatChatUIConfig.CornerRadii.indicatorBubbleRadius,
-                topTrailingRadius: ChatChatUIConfig.CornerRadii.indicatorBubbleRadius
+                bottomTrailingRadius: CustomConstants.CornerRadii.indicatorBubbleRadius,
+                topTrailingRadius: CustomConstants.CornerRadii.indicatorBubbleRadius
             )
         )
         .onAppear {
@@ -143,7 +143,7 @@ extension View {
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(
-                        isSelected ? ChatChatUIConfig.Colors.brandGradient : LinearGradient(colors: [ChatChatUIConfig.Paywall.inactiveBorderColor], startPoint: .leading, endPoint: .trailing),
+                        isSelected ? CustomConstants.Colors.brandGradient : LinearGradient(colors: [CustomConstants.Paywall.inactiveBorderColor], startPoint: .leading, endPoint: .trailing),
                         lineWidth: 2
                     )
             )

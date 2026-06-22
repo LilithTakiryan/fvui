@@ -15,7 +15,7 @@ struct GradientText: View {
             .font(font)
             .foregroundColor(.clear)
             .background(
-                ChatChatUIConfig.Colors.brandGradient
+                CustomConstants.Colors.brandGradient
             )
             .mask(
                 Text(text).font(font)

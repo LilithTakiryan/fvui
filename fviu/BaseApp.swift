@@ -11,7 +11,7 @@ import SwiftUI
 struct BaseApp: App {
     @StateObject private var subscriptionManager: SubscriptionManager
 
-    let paymentToken = Bundle.main.object(forInfoDictionaryKey: "PaymentToken") as? String ?? ""
+    let paymentToken = API.TokenProvider.payment.value
 
     init() {
         Apphud.start(apiKey: paymentToken)
@@ -24,6 +24,8 @@ struct BaseApp: App {
 //            if subscriptionManager.hasPremium {
             MainScreen()
                 .environmentObject(subscriptionManager)
+                .font(.custom(CustomConstants.Typography.fontName, size: 16))
+
 //            } else {
 //                PaywallScreen()
 //                    .environmentObject(subscriptionManager)

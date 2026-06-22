@@ -31,11 +31,11 @@ struct DropdownRow: View {
         HStack {
             if isSelected {
                 Text(option.label)
-                    .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .semibold))
-                    .foregroundStyle(ChatChatUIConfig.Colors.brandGradient)
+                    .font(.system(size: CustomConstants.Sizes.mainButtonFontSize, weight: .semibold))
+                    .foregroundStyle(CustomConstants.Colors.brandGradient)
             } else {
                 Text(option.label)
-                    .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .regular))
+                    .font(.system(size: CustomConstants.Sizes.mainButtonFontSize, weight: .regular))
                     .foregroundColor(.white)
             }
 
@@ -45,15 +45,15 @@ struct DropdownRow: View {
                 icon
                     .foregroundStyle(
                         isSelected
-                            ? AnyShapeStyle(ChatChatUIConfig.Colors.brandGradient)
+                            ? AnyShapeStyle(CustomConstants.Colors.brandGradient)
                             : AnyShapeStyle(Color.white)
                     )
                     .opacity(isSelected ? 1.0 : 0.8)
             }
         }
         .padding(.horizontal, 24)
-        .padding(.vertical, ChatChatUIConfig.Sizes.mainButtonVerticalPadding + 2)
-        .background(ChatChatUIConfig.Dropdown.panelBackground)
+        .padding(.vertical, CustomConstants.Sizes.mainButtonVerticalPadding + 2)
+        .background(CustomConstants.Dropdown.panelBackground)
     }
 }
 
@@ -81,7 +81,7 @@ struct MediaSettingsSelectorView: View {
 
     var body: some View {
         ZStack {
-            ChatChatUIConfig.Colors.backgroundDeep.ignoresSafeArea()
+            CustomConstants.Colors.backgroundDeep.ignoresSafeArea()
 
             VStack(spacing: 24) {
                 Spacer()
@@ -97,11 +97,11 @@ struct MediaSettingsSelectorView: View {
                                     DropdownRow(option: option, isSelected: selectedRatio == option.label)
                                 }
                                 if option != ratioOptions.last {
-                                    Divider().background(ChatChatUIConfig.Paywall.inactiveBorderColor.opacity(0.4))
+                                    Divider().background(CustomConstants.Paywall.inactiveBorderColor.opacity(0.4))
                                 }
                             }
                         }
-                        .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.Dropdown.cornerRadius))
+                        .clipShape(RoundedRectangle(cornerRadius: CustomConstants.Dropdown.cornerRadius))
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
 
@@ -113,16 +113,16 @@ struct MediaSettingsSelectorView: View {
                     }) {
                         HStack {
                             Text("Format")
-                                .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .medium))
-                                .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
+                                .font(.system(size: CustomConstants.Sizes.mainButtonFontSize, weight: .medium))
+                                .foregroundColor(CustomConstants.Paywall.subTextColor)
                             Spacer()
                             Text(selectedRatio)
-                                .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .semibold))
+                                .font(.system(size: CustomConstants.Sizes.mainButtonFontSize, weight: .semibold))
                                 .foregroundColor(.white)
                         }
                         .padding(.horizontal, 24)
-                        .padding(.vertical, ChatChatUIConfig.Sizes.mainButtonVerticalPadding + 4)
-                        .background(Capsule().fill(ChatChatUIConfig.Dropdown.buttonBackground))
+                        .padding(.vertical, CustomConstants.Sizes.mainButtonVerticalPadding + 4)
+                        .background(Capsule().fill(CustomConstants.Dropdown.buttonBackground))
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -138,11 +138,11 @@ struct MediaSettingsSelectorView: View {
                                     DropdownRow(option: option, isSelected: selectedQuality == option.label)
                                 }
                                 if option != qualityOptions.last {
-                                    Divider().background(ChatChatUIConfig.Paywall.inactiveBorderColor.opacity(0.4))
+                                    Divider().background(CustomConstants.Paywall.inactiveBorderColor.opacity(0.4))
                                 }
                             }
                         }
-                        .clipShape(RoundedRectangle(cornerRadius: ChatChatUIConfig.Dropdown.cornerRadius))
+                        .clipShape(RoundedRectangle(cornerRadius: CustomConstants.Dropdown.cornerRadius))
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
 
@@ -154,23 +154,23 @@ struct MediaSettingsSelectorView: View {
                     }) {
                         HStack {
                             Text("Quality")
-                                .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .medium))
-                                .foregroundColor(ChatChatUIConfig.Paywall.subTextColor)
+                                .font(.system(size: CustomConstants.Sizes.mainButtonFontSize, weight: .medium))
+                                .foregroundColor(CustomConstants.Paywall.subTextColor)
                             Spacer()
 
                             if selectedQuality == "720p" {
                                 Text(selectedQuality)
-                                    .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .semibold))
-                                    .foregroundStyle(ChatChatUIConfig.Colors.brandGradient)
+                                    .font(.system(size: CustomConstants.Sizes.mainButtonFontSize, weight: .semibold))
+                                    .foregroundStyle(CustomConstants.Colors.brandGradient)
                             } else {
                                 Text(selectedQuality)
-                                    .font(.system(size: ChatChatUIConfig.Sizes.mainButtonFontSize, weight: .semibold))
+                                    .font(.system(size: CustomConstants.Sizes.mainButtonFontSize, weight: .semibold))
                                     .foregroundColor(.white)
                             }
                         }
                         .padding(.horizontal, 24)
-                        .padding(.vertical, ChatChatUIConfig.Sizes.mainButtonVerticalPadding + 4)
-                        .background(Capsule().fill(ChatChatUIConfig.Dropdown.buttonBackground))
+                        .padding(.vertical, CustomConstants.Sizes.mainButtonVerticalPadding + 4)
+                        .background(Capsule().fill(CustomConstants.Dropdown.buttonBackground))
                     }
                 }
                 .frame(maxWidth: .infinity)

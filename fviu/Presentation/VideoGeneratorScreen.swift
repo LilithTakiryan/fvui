@@ -47,8 +47,8 @@ struct VideoGeneratorScreen: View {
                                 Text("Share")
                             }
                             .buttonStyle(CustomCapsuleButtonStyle(
-                                background: ChatChatUIConfig.Colors.receiverBubbleBg,
-                                verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding + 4
+                                background: CustomConstants.Colors.receiverBubbleBg,
+                                verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding + 4
                             ))
 
                             Button(action: {
@@ -61,12 +61,12 @@ struct VideoGeneratorScreen: View {
                                         .progressViewStyle(.circular)
                                         .tint(.white)
                                 } else {
-                                    Text("Download")
+                                    Text(.buttonDownload)
                                 }
                             }
                             .buttonStyle(CustomCapsuleButtonStyle(
-                                background: ChatChatUIConfig.Colors.brandGradient,
-                                verticalPadding: ChatChatUIConfig.Sizes.mainButtonVerticalPadding,
+                                background: CustomConstants.Colors.brandGradient,
+                                verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
                                 isScaled: true
                             ))
                             .disabled(viewModel.isDownloading)
@@ -92,7 +92,7 @@ struct VideoGeneratorScreen: View {
                     .padding(16)
                 } else {
                     VStack(spacing: 16) {
-                        Text("Create AI Video")
+                        Text(.labelCreateAiVideo)
                             .font(.system(size: 24, weight: .bold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -120,7 +120,7 @@ struct VideoGeneratorScreen: View {
                         Button(action: {
                             Task { await checkPhotoPermission() }
                         }) {
-                            Text("Generate Video")
+                            Text(.labelGenerateVideo)
                                 .frame(maxWidth: .infinity)
                                 .padding(12)
                                 .background(Color.blue)
@@ -135,15 +135,15 @@ struct VideoGeneratorScreen: View {
                 }
             }
         }
-        .navigationTitle("Result")
+        .navigationTitle(.labelResult)
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Photo Access Required", isPresented: $showPermissionAlert) {
-            Button("Open Settings", action: openCurrentAppSettings)
-            Button("Cancel", role: .cancel) {
+        .alert(.warningPhotoAccessRequired, isPresented: $showPermissionAlert) {
+            Button(.buttonOpenSettings, action: openCurrentAppSettings)
+            Button(.buttonCancel, role: .cancel) {
                 dismiss()
             }
         } message: {
-            Text("Enable photo access in Settings to create videos")
+            Text(.warningEnablePhotoAccess)
         }
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active {

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		131182672FE9684000B8B6E4 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 131182662FE9684000B8B6E4 /* Config.xcconfig */; };
+		131182A42FE9BB9B00B8B6E4 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 131182A32FE9BB9B00B8B6E4 /* Localizable.xcstrings */; };
 		13133A012FE7BB4700C3D956 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 13133A002FE7BB4700C3D956 /* Settings.bundle */; };
 		13133A042FE818EE00C3D956 /* ApphudSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 13133A032FE818EE00C3D956 /* ApphudSDK */; };
 		13133A0A2FE83E0F00C3D956 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 13133A092FE83E0F00C3D956 /* Products.storekit */; };
@@ -16,6 +17,7 @@
 
 /* Begin PBXFileReference section */
 		131182662FE9684000B8B6E4 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		131182A32FE9BB9B00B8B6E4 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		13133A002FE7BB4700C3D956 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		13133A092FE83E0F00C3D956 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		136E0CE62FE3F621003EC773 /* fviu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fviu.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -58,6 +60,7 @@
 		136E0CDD2FE3F621003EC773 = {
 			isa = PBXGroup;
 			children = (
+				131182A32FE9BB9B00B8B6E4 /* Localizable.xcstrings */,
 				131182662FE9684000B8B6E4 /* Config.xcconfig */,
 				13133A092FE83E0F00C3D956 /* Products.storekit */,
 				13133A002FE7BB4700C3D956 /* Settings.bundle */,
@@ -145,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				131182672FE9684000B8B6E4 /* Config.xcconfig in Resources */,
+				131182A42FE9BB9B00B8B6E4 /* Localizable.xcstrings in Resources */,
 				13133A012FE7BB4700C3D956 /* Settings.bundle in Resources */,
 				13133A0A2FE83E0F00C3D956 /* Products.storekit in Resources */,
 			);
@@ -223,6 +227,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -281,6 +286,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
