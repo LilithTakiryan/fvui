@@ -49,6 +49,7 @@ struct ChatHistoryScreen: View {
         .navigationTitle("AI Chat History")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
+            viewModel.showBottomSheet=false
             Task {
                 await viewModel.loadChats()
             }

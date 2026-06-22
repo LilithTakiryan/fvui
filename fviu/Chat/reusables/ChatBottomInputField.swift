@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChatBottomInputField: View {
     @State private var inputText: String = ""
-    @State var viewModel: ChatViewModel
+    @ObservedObject var viewModel: ChatViewModel
 
     var body: some View {
         Color.black

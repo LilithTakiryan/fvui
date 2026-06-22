@@ -11,7 +11,7 @@ import os
 @MainActor
 final class ChatViewModel: ObservableObject, Sendable {
     private let logger = Logger(subsystem: "com.chat", category: "ViewModel")
-    @Published var showBottomSheet: Bool = true
+    @Published var showBottomSheet: Bool = false
 
     var todayDateString: String {
         Date().formatted(date: .abbreviated, time: .omitted)

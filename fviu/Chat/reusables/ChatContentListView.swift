@@ -14,7 +14,7 @@ struct ChatMessage: Identifiable {
 }
 
 struct ChatContentListView: View {
-    var viewModel: ChatViewModel
+    @ObservedObject var  viewModel: ChatViewModel
 
     var body: some View {
         ZStack {

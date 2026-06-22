@@ -70,6 +70,7 @@ struct ChatScreen: View {
             }
         }
         .onAppear {
+            viewModel.showBottomSheet = true
             viewModel.initializeChat(chatID: "test-chat-id")
             viewModel.showBottomSheet = true
         }
