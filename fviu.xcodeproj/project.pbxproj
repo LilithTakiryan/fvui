@@ -7,17 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		131182672FE9684000B8B6E4 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 131182662FE9684000B8B6E4 /* Config.xcconfig */; };
 		13133A012FE7BB4700C3D956 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 13133A002FE7BB4700C3D956 /* Settings.bundle */; };
 		13133A042FE818EE00C3D956 /* ApphudSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 13133A032FE818EE00C3D956 /* ApphudSDK */; };
 		13133A0A2FE83E0F00C3D956 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 13133A092FE83E0F00C3D956 /* Products.storekit */; };
 		13133A0D2FE871DF00C3D956 /* SwiftFormat in Frameworks */ = {isa = PBXBuildFile; productRef = 13133A0C2FE871DF00C3D956 /* SwiftFormat */; };
-		1354C8382FE705E2005EB513 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1354C8372FE705E2005EB513 /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		131182662FE9684000B8B6E4 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		13133A002FE7BB4700C3D956 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		13133A092FE83E0F00C3D956 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
-		1354C8372FE705E2005EB513 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		136E0CE62FE3F621003EC773 /* fviu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fviu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -58,9 +58,9 @@
 		136E0CDD2FE3F621003EC773 = {
 			isa = PBXGroup;
 			children = (
+				131182662FE9684000B8B6E4 /* Config.xcconfig */,
 				13133A092FE83E0F00C3D956 /* Products.storekit */,
 				13133A002FE7BB4700C3D956 /* Settings.bundle */,
-				1354C8372FE705E2005EB513 /* Config.xcconfig */,
 				136E0CE82FE3F621003EC773 /* fviu */,
 				136E0CE72FE3F621003EC773 /* Products */,
 			);
@@ -144,9 +144,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				131182672FE9684000B8B6E4 /* Config.xcconfig in Resources */,
 				13133A012FE7BB4700C3D956 /* Settings.bundle in Resources */,
 				13133A0A2FE83E0F00C3D956 /* Products.storekit in Resources */,
-				1354C8382FE705E2005EB513 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +229,7 @@
 		};
 		136E0CF02FE3F623003EC773 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 131182662FE9684000B8B6E4 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -286,7 +287,7 @@
 		};
 		136E0CF22FE3F623003EC773 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1354C8372FE705E2005EB513 /* Config.xcconfig */;
+			baseConfigurationReference = 131182662FE9684000B8B6E4 /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -322,7 +323,6 @@
 		};
 		136E0CF32FE3F623003EC773 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1354C8372FE705E2005EB513 /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
