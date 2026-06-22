@@ -2,10 +2,9 @@
 //  Text2VideoRequest.swift
 //  fviu
 //
-//  Created by lilit on 21.06.26.
+//  Created by lilit on 22.06.26.
 //
 
-import Foundation
 
 struct Text2VideoRequest: Codable {
     let prompt: String

@@ -15,7 +15,7 @@ import SwiftUI
 }
 
 struct VideoGeneratorScreen: View {
-    @StateObject private var viewModel = VideoViewModel()
+    @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
     @State private var inputText = ""
     @State private var showPermissionAlert = false
     @Environment(\.dismiss) var dismiss

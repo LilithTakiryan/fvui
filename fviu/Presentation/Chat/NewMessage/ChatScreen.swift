@@ -11,7 +11,7 @@ import SwiftUI
 }
 
 struct ChatScreen: View {
-    @StateObject private var viewModel = ChatViewModel()
+    @StateObject private var viewModel = DependencyContainer.shared.makeChatViewModel()
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {

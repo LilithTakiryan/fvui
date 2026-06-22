@@ -8,7 +8,7 @@ import ApphudSDK
 import SwiftUI
 
 @main
-struct fviuApp: App {
+struct BaseApp: App {
     @StateObject private var subscriptionManager: SubscriptionManager
 
     let paymentToken = Bundle.main.object(forInfoDictionaryKey: "PaymentToken") as? String ?? ""

@@ -23,7 +23,7 @@ struct ChatHistoryScreen: View {
                     VStack(alignment: .leading, spacing: 24) {
                         ForEach(viewModel.groupedChats.keys.sorted(by: >), id: \.self) { date in
                             VStack(alignment: .leading, spacing: 12) {
-                                Text(dateLabel(date))
+                                Text(viewModel.dateLabel(date))
                                     .font(.system(size: 16, weight: .semibold))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 16)
@@ -33,7 +33,7 @@ struct ChatHistoryScreen: View {
                                         ChatHistoryItem(
                                             action: {},
                                             summary: chat.title ?? "Untitled Chat",
-                                            time: formatTime(chat.updated_at)
+                                            time: viewModel.formatTime(chat.updated_at)
                                         )
                                     }
                                     .buttonStyle(PlainButtonStyle())

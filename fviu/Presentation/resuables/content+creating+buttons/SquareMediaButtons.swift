@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Updated Button Component
 
 struct GradientBorderPlusButton: View {
     enum ButtonState {
