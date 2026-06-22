@@ -54,13 +54,13 @@ struct ChatScreen: View {
 
                         Text(Date().formatted(
                             .dateTime
-                            .day(.twoDigits)
-                            .month(.twoDigits)
-                            .year(.defaultDigits)
-                            .locale(Locale(identifier: "de_DE")) 
+                                .day(.twoDigits)
+                                .month(.twoDigits)
+                                .year(.defaultDigits)
+                                .locale(Locale(identifier: "de_DE"))
                         ))
-                            .font(.system(size: 13))
-                            .foregroundColor(.white.opacity(0.4))
+                        .font(.system(size: 13))
+                        .foregroundColor(.white.opacity(0.4))
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

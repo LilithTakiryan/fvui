@@ -5,7 +5,6 @@
 //  Created by lilit on 22.06.26.
 //
 
-
 //
 //  VideoViewModel.swift
 //  fviu
@@ -13,8 +12,8 @@
 //  Created by lilit on 22.06.26.
 //
 
-import Combine
 import AVKit
+import Combine
 import os
 
 @MainActor
@@ -33,9 +32,9 @@ final class VideoViewModel: ObservableObject {
     @Published var player: AVPlayer?
 
     init(generateVideoUseCase: GenerateVideoUseCase, getVideoStatusUseCase: GetVideoStatusUseCase) {
-            self.generateVideoUseCase = generateVideoUseCase
-            self.getVideoStatusUseCase = getVideoStatusUseCase
-        }
+        self.generateVideoUseCase = generateVideoUseCase
+        self.getVideoStatusUseCase = getVideoStatusUseCase
+    }
 
     func generateVideo(prompt: String) async {
         guard !prompt.isEmpty else { return }
@@ -61,7 +60,7 @@ final class VideoViewModel: ObservableObject {
             do {
                 let response = try await getVideoStatusUseCase.execute(id: videoID)
                 status = response
-                
+
                 switch response.status.lowercased() {
                 case "completed":
                     progress = 1.0
@@ -75,8 +74,8 @@ final class VideoViewModel: ObservableObject {
                     isGenerating = false
                     return
                 case "processing": progress = 0.7
-                case "pending":    progress = 0.3
-                default:           progress = 0.3
+                case "pending": progress = 0.3
+                default: progress = 0.3
                 }
 
                 if Task.isCancelled { isGenerating = false; return }

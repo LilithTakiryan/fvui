@@ -5,7 +5,6 @@
 //  Created by lilit on 22.06.26.
 //
 
-
 //
 //  ChatViewModel.swift
 //  fviu
@@ -19,7 +18,7 @@ import os
 @MainActor
 final class ChatViewModel: ObservableObject, Sendable {
     private let logger = Logger(subsystem: "com.chat", category: "ChatViewModel")
-    
+
     private let fetchChatsUseCase: FetchChatsUseCase
     private let sendMessageUseCase: SendMessageUseCase
     private var chatID: String = ""
@@ -30,17 +29,17 @@ final class ChatViewModel: ObservableObject, Sendable {
     @Published var error: String?
     @Published var chats: [DolaChatItem] = []
     @Published var isLoadingChats = false
-   
+
     init(fetchChatsUseCase: FetchChatsUseCase, sendMessageUseCase: SendMessageUseCase) {
-            self.fetchChatsUseCase = fetchChatsUseCase
-            self.sendMessageUseCase = sendMessageUseCase
-        }
-    
+        self.fetchChatsUseCase = fetchChatsUseCase
+        self.sendMessageUseCase = sendMessageUseCase
+    }
+
     private static let isoFormatters: [DateFormatter] = {
         let formats = [
             "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",
             "yyyy-MM-dd'T'HH:mm:ss'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
         ]
         return formats.map { format in
             let formatter = DateFormatter()
@@ -50,8 +49,6 @@ final class ChatViewModel: ObservableObject, Sendable {
             return formatter
         }
     }()
-
-  
 
     func initializeChat(chatID: String) {
         self.chatID = chatID

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct GradientBorderPlusButton: View {
     enum ButtonState {
         case empty

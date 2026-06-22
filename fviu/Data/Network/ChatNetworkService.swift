@@ -5,7 +5,6 @@
 //  Created by lilit on 22.06.26.
 //
 
-
 protocol ChatNetworkService: Sendable {
     func sendMessage(_ text: String, chatID: String) async throws -> String
     func fetchMessages(chatID: String) async throws -> [ChatMessage]
@@ -15,9 +14,9 @@ protocol ChatNetworkService: Sendable {
 final class DolaNetworkService: ChatNetworkService {
     private let api: APIClientProtocol
 
-        init(api: APIClientProtocol = APIClient(tokenProvider: .bearer)) {
-            self.api = api
-        }
+    init(api: APIClientProtocol = APIClient(tokenProvider: .bearer)) {
+        self.api = api
+    }
 
     func sendMessage(_ text: String, chatID: String) async throws -> String {
         let payload = try await api.request(ChatEndpoint.send(chatID: chatID, text: text), response: [String: String].self)

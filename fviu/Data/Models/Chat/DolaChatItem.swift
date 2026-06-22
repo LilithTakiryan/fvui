@@ -5,7 +5,6 @@
 //  Created by lilit on 22.06.26.
 //
 
-
 struct DolaChatItem: Identifiable, Decodable {
     let id: String
     let title: String?

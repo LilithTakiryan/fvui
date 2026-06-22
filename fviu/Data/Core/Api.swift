@@ -1,37 +1,36 @@
 //
-//  TokenProvider.swift
+//  Api.swift
 //  fviu
 //
 //  Created by lilit on 22.06.26.
 //
 
-
-import Foundation
 import Combine
+import Foundation
 import os
-
 
 protocol Endpoint {
     func makeRequest() throws -> URLRequest
 }
+
 protocol APIClientProtocol {
     func request<T: Decodable>(_ endpoint: Endpoint, response: T.Type) async throws -> T
     func request(_ endpoint: Endpoint) async throws
 }
 
-struct API {
+enum API {
     static let baseURL = "https://nebulaapps.site"
     static let defaultQueryItems = [
         URLQueryItem(name: "user_id", value: "test_user"),
-        URLQueryItem(name: "app_id", value: "com.test.test")
+        URLQueryItem(name: "app_id", value: "com.test.test"),
     ]
-    
+
     enum TokenProvider: String {
         case bearer = "BearerToken"
         case payment = "PaymentToken"
-        
+
         var value: String {
-            Bundle.main.object(forInfoDictionaryKey: self.rawValue) as? String ?? ""
+            Bundle.main.object(forInfoDictionaryKey: rawValue) as? String ?? ""
         }
     }
 }
@@ -45,7 +44,7 @@ final class APIClient: APIClientProtocol {
     init(
         session: URLSession = .shared,
         decoder: JSONDecoder = .init(),
-        tokenProvider: API.TokenProvider = .bearer 
+        tokenProvider: API.TokenProvider = .bearer
     ) {
         self.session = session
         self.decoder = decoder
@@ -54,7 +53,7 @@ final class APIClient: APIClientProtocol {
 
     private func performRequest(_ endpoint: Endpoint) async throws -> (Data, URLResponse) {
         var request = try endpoint.makeRequest()
-        
+
         request.setValue("Bearer \(tokenProvider.value)", forHTTPHeaderField: "Authorization")
 
         logger.info("Sending request to: \(request.url?.absoluteString ?? "Unknown URL")")
@@ -63,7 +62,7 @@ final class APIClient: APIClientProtocol {
         return (data, response)
     }
 
-    func request<T: Decodable>(_ endpoint: Endpoint, response: T.Type) async throws -> T {
+    func request<T: Decodable>(_ endpoint: Endpoint, response _: T.Type) async throws -> T {
         let (data, _) = try await performRequest(endpoint)
         do {
             return try decoder.decode(T.self, from: data)
@@ -79,7 +78,7 @@ final class APIClient: APIClientProtocol {
 
     private func validate(_ response: URLResponse, data: Data) throws {
         guard let http = response as? HTTPURLResponse else { throw NetworkError.invalidResponse }
-        guard 200...299 ~= http.statusCode else {
+        guard 200 ... 299 ~= http.statusCode else {
             logger.error("HTTP Error Status: \(http.statusCode), Response Payload: \(String(data: data, encoding: .utf8) ?? "")")
             throw NetworkError.http(http.statusCode)
         }

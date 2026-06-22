@@ -5,8 +5,8 @@
 //  Created by lilit on 22.06.26.
 //
 
-import Foundation
 import Combine
+import Foundation
 import os
 
 enum ChatEndpoint: Endpoint {
@@ -18,20 +18,20 @@ enum ChatEndpoint: Endpoint {
         let path: String
         switch self {
         case .chats: path = "/dola/chats"
-        case .messages(let id, _), .send(let id, _):
+        case let .messages(id, _), let .send(id, _):
             path = "/dola/chats/\(id)/messages"
         }
 
         var components = URLComponents(string: "\(API.baseURL)\(path)")!
         var queryItems = API.defaultQueryItems
-        
+
         if let limit = extractLimit() {
             queryItems.append(URLQueryItem(name: "limit", value: String(limit)))
         }
         components.queryItems = queryItems
 
         var request = URLRequest(url: components.url!)
-        if case .send(_, let text) = self {
+        if case let .send(_, text) = self {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             let payload: [String: Any?] = ["message": text, "persona_id": nil, "additional_prompt": nil]
@@ -42,8 +42,8 @@ enum ChatEndpoint: Endpoint {
 
     private func extractLimit() -> Int? {
         switch self {
-        case .chats(let limit): return limit
-        case .messages(_, let limit): return limit
+        case let .chats(limit): return limit
+        case let .messages(_, limit): return limit
         default: return nil
         }
     }
