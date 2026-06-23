@@ -40,6 +40,8 @@ final class VideoViewModel: ObservableObject {
     @Published var isDownloading = false
     @Published var localVideoURL: URL?
     @Published var player: AVPlayer?
+    @Published var shouldShowGenerating = false
+
 
     init(generateVideoUseCase: GenerateVideoUseCase, getVideoStatusUseCase: GetVideoStatusUseCase) {
         self.generateVideoUseCase = generateVideoUseCase
@@ -50,9 +52,12 @@ final class VideoViewModel: ObservableObject {
         guard !prompt.isEmpty else { return }
         self.prompt = prompt
         isGenerating = true
+        shouldShowGenerating = true 
         error = nil
         progress = 0
-
+        status = nil
+        
+        try? await Task.sleep(nanoseconds: 100_000_000)
         do {
             videoID = try await generateVideoUseCase.execute(prompt: prompt)
             await pollStatus()
@@ -75,6 +80,7 @@ final class VideoViewModel: ObservableObject {
                 case "completed":
                     progress = 1.0
                     isGenerating = false
+                    shouldShowGenerating = false
                     if let urlString = response.video_url, let url = URL(string: urlString) {
                         player = AVPlayer(url: url)
                     }

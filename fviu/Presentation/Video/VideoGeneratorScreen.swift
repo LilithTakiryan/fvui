@@ -26,14 +26,14 @@ struct VideoGeneratorScreen: View {
             Color.black.ignoresSafeArea()
 
             VStack(spacing: 16) {
-                if viewModel.isGenerating {
+                if viewModel.isGenerating || viewModel.shouldShowGenerating {
                     GeneratingView()
                 } else if let status = viewModel.status,
                           status.status.lowercased() == "completed",
                           let urlString = status.video_url,
                           let url = URL(string: urlString)
                 {
-                    ResultScreen(url: url)
+                    ResultScreen(url: url, prompt: viewModel.prompt)  
                 } else {
                     VStack(spacing: 16) {
                         Text(.labelCreateAiVideo)

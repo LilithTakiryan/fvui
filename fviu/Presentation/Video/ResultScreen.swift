@@ -10,15 +10,19 @@ import AVKit
 
 struct ResultScreen: View {
     let url: URL
+    let prompt: String
     @State private var player: AVPlayer
     @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
     @State private var showAlertVideoDownloaded = false
     @State private var cachedVideoURL: URL?
+    
 
-    init(url: URL) {
-        self.url = url
-        _player = State(initialValue: AVPlayer(url: url))
-    }
+    init(url: URL, prompt: String) {
+            self.url = url
+            self.prompt = prompt
+            _player = State(initialValue: AVPlayer(url: url))
+        }
+
 
     var body: some View {
         VStack(spacing: 16) {
@@ -90,7 +94,11 @@ struct ResultScreen: View {
             }
         }
         .overlay(alignment: .topTrailing){
-            ReplaceButton(action: {})
+            ReplaceButton(
+                action: { Task {
+                    await viewModel.generateVideo(prompt: viewModel.prompt)
+                }
+                })
         }
         .onDisappear {
             viewModel.clearCache()
