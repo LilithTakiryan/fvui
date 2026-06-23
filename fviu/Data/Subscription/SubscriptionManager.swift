@@ -9,7 +9,6 @@ import ApphudSDK
 import Combine
 import Foundation
 import StoreKit
-import SwiftUI
 
 class SubscriptionManager: NSObject, ObservableObject, ApphudDelegate {
     static let shared = SubscriptionManager()
