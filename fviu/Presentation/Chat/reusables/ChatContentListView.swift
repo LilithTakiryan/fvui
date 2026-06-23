@@ -16,7 +16,6 @@ import SwiftUI
 
 struct ChatContentListView: View {
     @ObservedObject var viewModel: ChatViewModel
-
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
@@ -36,21 +35,19 @@ struct ChatContentListView: View {
                                 }
                             }
                         }
-
+                        
                         if viewModel.isAiThinking {
                             HStack {
                                 TypingIndicatorView()
                                     .background(Color(red: 0.12, green: 0.12, blue: 0.14))
-                                    .clipShape(UnevenRoundedRectangle(topLeadingRadius: 24, bottomLeadingRadius: 0, bottomTrailingRadius: 24, topTrailingRadius: 24))
+                                    .clipShape(UnevenRoundedRectangle(topLeadingRadius: CustomConstants.CornerRadius.radius, bottomLeadingRadius: 0, bottomTrailingRadius: CustomConstants.CornerRadius.radius, topTrailingRadius: CustomConstants.CornerRadius.radius))
                                 Spacer()
                             }
                         }
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 20)
                 }
-                Spacer()
+                
+                
             }
         }
-    }
-}
+    }}

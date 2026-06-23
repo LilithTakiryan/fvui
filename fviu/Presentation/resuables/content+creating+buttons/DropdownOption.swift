@@ -67,7 +67,7 @@ struct MediaSettingsSelectorView: View {
     var ratioOptions: [DropdownOption] {
         [
             DropdownOption(label: "16:9", icon: AnyView(RoundedRectangle(cornerRadius: 3).stroke(lineWidth: 2).frame(width: 24, height: 14))),
-            DropdownOption(label: "9:16", icon: AnyView(RoundedRectangle(cornerRadius: 3).stroke(lineWidth: 2).frame(width: 14, height: 24))),
+            DropdownOption(label: "9:16", icon: AnyView(RoundedRectangle(cornerRadius: CustomConstants.CornerRadius.radius).stroke(lineWidth: 2).frame(width: 14, height: 24))),
             DropdownOption(label: "1:1", icon: AnyView(RoundedRectangle(cornerRadius: 3).stroke(lineWidth: 2).frame(width: 18, height: 18))),
         ]
     }

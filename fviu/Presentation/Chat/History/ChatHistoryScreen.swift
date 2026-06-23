@@ -24,7 +24,7 @@ struct ChatHistoryScreen: View {
                         ForEach(viewModel.groupedChats.keys.sorted(by: >), id: \.self) { date in
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(viewModel.dateLabel(date))
-                                    .font(.system(size: 16, weight: .semibold))
+                                    .font(CustomConstants.Typography.semiBold20)
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 16)
 

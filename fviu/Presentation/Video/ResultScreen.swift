@@ -16,51 +16,32 @@ struct ResultScreen: View {
     @State private var showAlertVideoDownloaded = false
     @State private var cachedVideoURL: URL?
     
-
+    
     init(url: URL, prompt: String) {
-            self.url = url
-            self.prompt = prompt
-            _player = State(initialValue: AVPlayer(url: url))
-        }
-
-
+        self.url = url
+        self.prompt = prompt
+        _player = State(initialValue: AVPlayer(url: url))
+    }
+    
     var body: some View {
         VStack(spacing: 16) {
             VideoPlayer(player: player)
+                .scaleEffect(1.15)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-
+                .clipShape(
+                    RoundedRectangle(
+                        cornerRadius: CustomConstants.CornerRadius.radius)
+                )
+                .onAppear {
+                    player.play()
+                }
+                .onDisappear {
+                    player.pause()
+                }
             
             HStack(spacing: 12) {
-                Button(action: {
-                    Task { await shareVideo() }
-                }) {
-                    Text(.buttonShare)
-                }
-                .buttonStyle(CustomCapsuleButtonStyle(
-                    background: CustomConstants.Colors.receiverBubbleBg,
-                    verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding + 4
-                ))
-                
-                Button(action: {
-                    Task { await viewModel.downloadVideo(from: url) }
-                }) {
-                    if viewModel.isDownloading {
-                        ProgressView().tint(.white)
-                    } else {
-                        Text(.buttonDownload)
-                    }
-                }
-                .buttonStyle(CustomCapsuleButtonStyle(
-                    background: CustomConstants.Colors.brandGradient,
-                    verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
-                    isScaled: true
-                ))
-                .disabled(viewModel.isDownloading)
+                videoActionButtons(for: url)
             }
-            .padding(.horizontal)
-            .padding(.bottom, 8)
-            
             Spacer()
         }
         .padding(16)
@@ -71,26 +52,9 @@ struct ResultScreen: View {
         }
         .overlay {
             if showAlertVideoDownloaded {
-                VStack(spacing: 12) {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 40, weight: .bold))
-                        .foregroundStyle(CustomConstants.Colors.brandGradient)
-                    
-                    Text(.alertVideoSaved)
-                        .foregroundColor(.white)
-                }
-                .frame(maxWidth: 200)
-                .padding(24)
-                .background(Color.black.opacity(0.8))
-                .background(.ultraThinMaterial)
-                .cornerRadius(16)
-                .transition(.scale.combined(with: .opacity))
-                .task {
-                    try? await Task.sleep(nanoseconds: 2_500_000_000)
-                    withAnimation {
-                        showAlertVideoDownloaded = false
-                    }
-                }
+                VideoSavedAlert(
+                    showAlertVideoDownloaded: showAlertVideoDownloaded
+                )
             }
         }
         .overlay(alignment: .topTrailing){
@@ -99,9 +63,44 @@ struct ResultScreen: View {
                     await viewModel.generateVideo(prompt: viewModel.prompt)
                 }
                 })
+            .padding(16)
         }
         .onDisappear {
             viewModel.clearCache()
+        }
+        
+    }
+    
+    
+    
+    @ViewBuilder
+    private func videoActionButtons(for url: URL) -> some View {
+        HStack(spacing: 12) {
+            Button(action: {
+                Task { await shareVideo() }
+            }) {
+                Text(.buttonShare)
+            }
+            .buttonStyle(CustomCapsuleButtonStyle(
+                background: CustomConstants.Colors.receiverBubbleBg,
+                verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding + 4
+            ))
+            
+            Button(action: {
+                Task { await viewModel.downloadVideo(from: url) }
+            }) {
+                if viewModel.isDownloading {
+                    ProgressView().tint(.white)
+                } else {
+                    Text(.buttonDownload)
+                }
+            }
+            .buttonStyle(CustomCapsuleButtonStyle(
+                background: CustomConstants.Colors.brandGradient,
+                verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
+                isScaled: true
+            ))
+            .disabled(viewModel.isDownloading)
         }
     }
     

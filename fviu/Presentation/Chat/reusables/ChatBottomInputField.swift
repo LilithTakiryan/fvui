@@ -18,6 +18,7 @@ struct ChatBottomInputField: View {
                 VStack {
                     HStack(alignment: .bottom) {
                         TextField("How can I help you?", text: $inputText, axis: .vertical)
+                            .font(CustomConstants.Typography.regular16)
                             .lineLimit(1 ... 5)
                             .foregroundColor(.white)
                             .padding(.vertical, 12)
@@ -47,7 +48,7 @@ struct ChatBottomInputField: View {
                         .padding(.bottom, inputText.isEmpty ? 12 : 6)
                     }
                     .background(CustomConstants.Dropdown.buttonBackground)
-                    .cornerRadius(24)
+                    .cornerRadius(CustomConstants.CornerRadius.radius)
                     .padding(.horizontal)
                     .padding(.top, 8)
 

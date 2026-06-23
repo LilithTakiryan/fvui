@@ -21,7 +21,7 @@ struct CategoryTagSelectorView: View {
                         }
                     }) {
                         Text(category)
-                            .font(.system(size: 16, weight: .medium))
+                            .font(CustomConstants.Typography.semiBold16)
                             .foregroundColor(.white)
                             .padding(.horizontal, 24)
                             .padding(.vertical, 14)

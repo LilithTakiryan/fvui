@@ -37,8 +37,11 @@ enum CustomConstants {
 
     enum Typography {
         static let fontName = "Inter"
-
+        static let spProDisplay = "SP Pro Display"
+        static let spProDisplayRegular11 = Font.custom(spProDisplay, size: 11).weight(.regular)
+        static let spProDisplayRegular12 = Font.custom(spProDisplay, size: 12).weight(.regular)
         static let bold34 = Font.custom(fontName, size: 34).weight(.bold)
+        static let bold24 = Font.custom(fontName, size: 24).weight(.bold)
         static let bold28 = Font.custom(fontName, size: 28).weight(.bold)
 
         static let semiBold20 = Font.custom(fontName, size: 20).weight(.semibold)
@@ -53,6 +56,7 @@ enum CustomConstants {
         static let regular20 = Font.custom(fontName, size: 20).weight(.regular)
         static let regular16 = Font.custom(fontName, size: 16).weight(.regular)
         static let regular14 = Font.custom(fontName, size: 14).weight(.regular)
+        static let regular12 = Font.custom(fontName, size: 12).weight(.regular)
     }
 
     enum SquareButton {
@@ -74,14 +78,13 @@ enum CustomConstants {
         static let indicatorDotSmall: CGFloat = 12
     }
 
-    enum CornerRadii {
-        static let defaultBubbleRadius: CGFloat = 20
-        static let indicatorBubbleRadius: CGFloat = 24
+    enum CornerRadius {
+        static let radius: CGFloat = 24
     }
 
     enum Dropdown {
         static let panelBackground = Color(red: 0.08, green: 0.08, blue: 0.09)
         static let buttonBackground = Color(red: 0.12, green: 0.12, blue: 0.14)
-        static let cornerRadius: CGFloat = 20
+        static let cornerRadius: CGFloat = 24
     }
 }

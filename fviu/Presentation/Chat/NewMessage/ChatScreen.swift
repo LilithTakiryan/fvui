@@ -13,19 +13,30 @@ import SwiftUI
 struct ChatScreen: View {
     @StateObject private var viewModel = DependencyContainer.shared.makeChatViewModel()
     @Environment(\.dismiss) private var dismiss
-
+    
     var body: some View {
         ZStack {
             Color.black
                 .ignoresSafeArea()
-
-            ScrollView {
-                VStack {
-                    ChatContentListView(viewModel: viewModel)
-                    ChatBottomInputField(viewModel: viewModel)
+            VStack {
+                ScrollView {
+                    if !viewModel.messages.isEmpty {
+                        ChatContentListView(viewModel: viewModel)
+                    }
                 }
+                
+                ChatBottomInputField(viewModel: viewModel)
+            }
+            
+            
+            if viewModel.messages.isEmpty {
+                EmptyChatView()
+                    .padding(.horizontal, 16)
+                
             }
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 24)
         .navigationBarBackButtonHidden(true)
         .toolbarBackground(Color(red: 0.11, green: 0.09, blue: 0.13), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
@@ -40,18 +51,18 @@ struct ChatScreen: View {
                         .foregroundColor(.white)
                 }
             }
-
+            
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 12) {
                     Image(.chatIcon)
                         .resizable()
                         .frame(width: 32, height: 32)
-
+                    
                     VStack(alignment: .leading, spacing: 2) {
                         Text("AI Chat")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-
+                        
                         Text(Date().formatted(
                             .dateTime
                                 .day(.twoDigits)
@@ -65,7 +76,7 @@ struct ChatScreen: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-
+            
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: ChatHistoryScreen(viewModel: viewModel)) {
                     Image(.history)
@@ -81,6 +92,7 @@ struct ChatScreen: View {
             viewModel.showBottomSheet = true
         }
         .onDisappear {
+            viewModel.cleanChat()
             viewModel.showBottomSheet = false
         }
         .environmentObject(viewModel)

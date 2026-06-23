@@ -37,7 +37,7 @@ struct VideoGeneratorScreen: View {
                 } else {
                     VStack(spacing: 16) {
                         Text(.labelCreateAiVideo)
-                            .font(.system(size: 24, weight: .bold))
+                            .font(CustomConstants.Typography.bold24)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -46,7 +46,7 @@ struct VideoGeneratorScreen: View {
                             .padding(8)
                             .background(Color(.systemGray6))
                             .foregroundColor(.white)
-                            .cornerRadius(8)
+                            .cornerRadius(CustomConstants.CornerRadius.radius)
 
                         if let error = viewModel.error {
                             HStack {
@@ -69,7 +69,7 @@ struct VideoGeneratorScreen: View {
                                 .padding(12)
                                 .background(Color.blue)
                                 .foregroundColor(.white)
-                                .cornerRadius(8)
+                                .cornerRadius(CustomConstants.CornerRadius.radius)
                         }
                         .disabled(inputText.isEmpty || viewModel.isGenerating)
 

@@ -21,14 +21,14 @@ struct NoContentYet: View {
     let description: String
 
     var body: some View {
-        VStack {
+        VStack(spacing: 16) {
             Image(icon)
                 .frame(width: 60, height: 60)
             Text(title)
-                .font(.system(size: 28))
+                .font(CustomConstants.Typography.bold28)
                 .foregroundColor(.white)
             Text(description)
-                .font(.system(size: 16))
+                .font(CustomConstants.Typography.regular16)
                 .foregroundColor(.secondary)
                 .lineLimit(2)
                 .multilineTextAlignment(.center)
@@ -38,28 +38,24 @@ struct NoContentYet: View {
 
 struct EmptyChatView: View {
     var body: some View {
-        VStack {
-            VStack {
-                HStack {
-                    Text("Your")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.white)
-
-                    GradientText(
-                        text: "AI assistant",
-                        font: .system(size: 24, weight: .bold, design: .default)
-                    )
-                }
-                Text("for anything.")
-                    .font(.system(size: 24, weight: .bold))
+        VStack(spacing: 12) {
+            HStack(spacing: 6) {
+                Text("Your")
+                    .font(CustomConstants.Typography.bold24)
+                    .foregroundColor(.white)
+                GradientText(
+                    text: "AI Assistant",
+                    font: .system(size: 24, weight: .bold)
+                ).font(CustomConstants.Typography.bold24)
+                Text("for anything")
+                    .font(CustomConstants.Typography.bold24)
                     .foregroundColor(.white)
             }
-
-            Text("Ask questions, get answers, and explore ideas in seconds")
-                .font(.system(size: 14))
+            
+            Text("Ask questions, brainstorm ideas, write content, or get instant answers.")
+                .font(CustomConstants.Typography.regular14)
                 .foregroundColor(.secondary)
-                .lineLimit(2)
                 .multilineTextAlignment(.center)
-        }
-    }
+                .padding(.horizontal, 32)
+        }    }
 }

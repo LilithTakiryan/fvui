@@ -4,15 +4,14 @@
 //
 //  Created by lilit on 19.06.26.
 //
+import ApphudSDK
+import StoreKit
 import SwiftUI
 
 #Preview {
     PaywallScreen()
+        .environmentObject(SubscriptionManager.shared)
 }
-
-import ApphudSDK
-import StoreKit
-import SwiftUI
 
 struct SubscriptionOption: Identifiable {
     let id: String
@@ -67,7 +66,7 @@ struct PaywallScreen: View {
                 if showButton {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(CustomConstants.Typography.semiBold16)
                             .foregroundColor(.white.opacity(0.6))
                     }
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
@@ -124,7 +123,7 @@ struct PaywallScreen: View {
     private var headerSection: some View {
         Text("Create anything you want")
             .foregroundColor(.white)
-            .font(.system(size: 34, weight: .bold))
+            .font(CustomConstants.Typography.bold34)
             .multilineTextAlignment(.center)
             .padding(.horizontal, 8)
     }
@@ -142,14 +141,14 @@ struct PaywallScreen: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
                     Text(option.duration)
-                        .font(.system(size: 20, weight: .bold))
+                        .font(CustomConstants.Typography.regular16)
                     Text("\(option.weeklyPrice) / week")
-                        .font(.system(size: 20, weight: .medium))
+                        .font(CustomConstants.Typography.regular14)
                 }
                 .foregroundColor(.white)
 
                 Text(option.fullPrice)
-                    .font(.system(size: 16, weight: .medium))
+                    .font(CustomConstants.Typography.medium16)
                     .foregroundColor(CustomConstants.Paywall.subTextColor)
             }
 
@@ -157,7 +156,7 @@ struct PaywallScreen: View {
 
             if let badgeText = option.discountBadge {
                 Text(badgeText)
-                    .font(.system(size: 13, weight: .bold))
+                    .font(CustomConstants.Typography.regular16)
                     .foregroundColor(.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
@@ -167,7 +166,10 @@ struct PaywallScreen: View {
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 20)
-        .brandCardStyle(cornerRadius: 24, isSelected: selectedId == option.id)
+        .brandCardStyle(
+            cornerRadius: CustomConstants.CornerRadius.radius,
+            isSelected: selectedId == option.id
+        )
         .onTapGesture {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                 selectedId = option.id
@@ -179,6 +181,8 @@ struct PaywallScreen: View {
         HStack(spacing: 8) {
             Image(systemName: "clock.arrow.circlepath")
             Text("Cancel anytime")
+                .font(.custom("SF Pro Display", size: 14))
+                
         }
         .font(.system(size: 15, weight: .medium))
         .foregroundColor(CustomConstants.Paywall.subTextColor)
@@ -197,6 +201,7 @@ struct PaywallScreen: View {
             }
         }) {
             Text("Unlock now")
+                .font(CustomConstants.Typography.spProDisplayRegular12)
         }
         .buttonStyle(CustomCapsuleButtonStyle(
             background: CustomConstants.Colors.brandGradient,
@@ -219,12 +224,17 @@ struct PaywallScreen: View {
     private var footerLinks: some View {
         HStack {
             Text("Privacy policy")
+                .font(CustomConstants.Typography.spProDisplayRegular11)
             Spacer()
-            Button("Restore purchases") {
+            Button(action: {
                 subManager.restorePurchases()
+            }) {
+                Text("Restore purchases")
+                    .font(CustomConstants.Typography.spProDisplayRegular11)
             }
             Spacer()
             Text("Terms of use")
+                .font(CustomConstants.Typography.spProDisplayRegular11)
         }
         .font(.system(size: 14, weight: .medium))
         .foregroundColor(CustomConstants.Paywall.subTextColor)
@@ -239,16 +249,13 @@ struct PaywallScreen: View {
                 .frame(width: 20, height: 20)
 
             Text(title)
-                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .font(CustomConstants.Typography.medium16)
                 .foregroundColor(.white)
         }
     }
 }
 
-#Preview {
-    PaywallScreen()
-        .environmentObject(SubscriptionManager.shared)
-}
+
 
 extension SKProduct {
     var localizedPrice: String {
@@ -258,3 +265,4 @@ extension SKProduct {
         return formatter.string(from: price) ?? ""
     }
 }
+

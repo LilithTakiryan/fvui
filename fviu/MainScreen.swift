@@ -24,23 +24,25 @@ struct MainScreen: View {
                     .scaledToFill()
                     .ignoresSafeArea()
 
-                VStack {
-                    Image(.sparkles)
-                        .frame(width: 60, height: 60)
-                    Text(.labelMainTools)
-                        .foregroundColor(.white)
-                        .font(.system(size: 24, weight: .bold))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 8)
+                VStack(spacing: 40) {
+                    VStack(spacing: 24){
+                        Image(.sparkles)
+                            .frame(width: 60, height: 60)
+                        Text(.labelMainTools)
+                            .foregroundColor(.white)
+                            .font(CustomConstants.Typography.bold24)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 8)
 
-                    OpenChatButton(action: {
-                        navigateToChat = true
-                    })
-                    .navigationDestination(isPresented: $navigateToChat) {
-                        ChatScreen()
-                    }
-                    .navigationDestination(isPresented: $navigateToGenerate) {
-                        VideoGeneratorScreen()
+                        OpenChatButton(action: {
+                            navigateToChat = true
+                        })
+                        .navigationDestination(isPresented: $navigateToChat) {
+                            ChatScreen()
+                        }
+                        .navigationDestination(isPresented: $navigateToGenerate) {
+                            VideoGeneratorScreen()
+                        }
                     }
 
                     FeaturesView(

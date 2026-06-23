@@ -63,6 +63,10 @@ final class ChatViewModel: ObservableObject, Sendable {
         }
         isLoadingChats = false
     }
+    
+    func cleanChat(){
+        messages = []
+    }
 
     func sendMessage(_ text: String) async {
         guard !text.isEmpty else { return }

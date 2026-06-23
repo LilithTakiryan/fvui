@@ -51,7 +51,10 @@ struct ChatBubbleShape: Shape {
             byRoundingCorners: isFromCurrentUser ?
                 [.topLeft, .topRight, .bottomLeft] :
                 [.topLeft, .topRight, .bottomRight],
-            cornerRadii: CGSize(width: CustomConstants.CornerRadii.defaultBubbleRadius, height: CustomConstants.CornerRadii.defaultBubbleRadius)
+            cornerRadii: CGSize(
+                width: CustomConstants.CornerRadius.radius,
+                height: CustomConstants.CornerRadius.radius
+            )
         )
         return Path(path.cgPath)
     }
@@ -62,7 +65,7 @@ struct GradientChatBubble: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: CustomConstants.Sizes.bubbleFontSize, weight: .regular))
+            .font(CustomConstants.Typography.regular16)
             .foregroundColor(.white)
             .lineSpacing(CustomConstants.Sizes.bubbleLineSpacing)
             .padding(.horizontal, 20)
@@ -78,7 +81,7 @@ struct ReceiverChatBubble: View {
 
     var body: some View {
         Text(messageText)
-            .font(.system(size: CustomConstants.Sizes.bubbleFontSize, weight: .regular))
+            .font(CustomConstants.Typography.regular16)
             .foregroundColor(.white)
             .lineSpacing(CustomConstants.Sizes.bubbleLineSpacing)
             .padding(.horizontal, 18)
@@ -86,10 +89,10 @@ struct ReceiverChatBubble: View {
             .background(CustomConstants.Colors.receiverBubbleBg)
             .clipShape(
                 UnevenRoundedRectangle(
-                    topLeadingRadius: CustomConstants.CornerRadii.defaultBubbleRadius,
+                    topLeadingRadius: CustomConstants.CornerRadius.radius,
                     bottomLeadingRadius: 0,
-                    bottomTrailingRadius: CustomConstants.CornerRadii.defaultBubbleRadius,
-                    topTrailingRadius: CustomConstants.CornerRadii.defaultBubbleRadius
+                    bottomTrailingRadius: CustomConstants.CornerRadius.radius,
+                    topTrailingRadius: CustomConstants.CornerRadius.radius
                 )
             )
             .frame(maxWidth: CustomConstants.Sizes.maxBubbleWidth, alignment: .leading)
@@ -124,10 +127,10 @@ struct TypingIndicatorView: View {
         .background(CustomConstants.Colors.receiverBubbleBg)
         .clipShape(
             UnevenRoundedRectangle(
-                topLeadingRadius: CustomConstants.CornerRadii.indicatorBubbleRadius,
+                topLeadingRadius: CustomConstants.CornerRadius.radius,
                 bottomLeadingRadius: 0,
-                bottomTrailingRadius: CustomConstants.CornerRadii.indicatorBubbleRadius,
-                topTrailingRadius: CustomConstants.CornerRadii.indicatorBubbleRadius
+                bottomTrailingRadius: CustomConstants.CornerRadius.radius,
+                topTrailingRadius: CustomConstants.CornerRadius.radius
             )
         )
         .onAppear {
@@ -163,7 +166,7 @@ struct OpenChatButton: View {
                         .font(.system(size: 20, weight: .medium))
 
                     Text("Ask anything...")
-                        .font(.system(size: 18))
+                        .font(CustomConstants.Typography.regular16)
                         .foregroundColor(.gray)
 
                     Spacer()
@@ -207,13 +210,13 @@ struct ChatHistoryItem: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(summary)
-                    .font(.system(size: 16))
+                    .font(CustomConstants.Typography.regular16)
                     .foregroundColor(.white)
                     .lineLimit(1)
                     .truncationMode(.tail)
 
                 Text(time)
-                    .font(.system(size: 14))
+                    .font(CustomConstants.Typography.regular14)
                     .foregroundColor(.gray)
             }
 

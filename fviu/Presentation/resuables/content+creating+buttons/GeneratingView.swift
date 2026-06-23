@@ -16,10 +16,10 @@ struct GeneratingView: View {
         VStack {
             Image(.generating)
             Text("Generating...")
-                .font(.system(size: 20, weight: .medium))
+                .font(CustomConstants.Typography.semiBold20)
                 .foregroundStyle(Color.white)
             Text("We’re creating the best result for you")
-                .font(.system(size: 16, weight: .light))
+                .font(CustomConstants.Typography.regular16)
                 .foregroundStyle(.secondary)
         }
     }
