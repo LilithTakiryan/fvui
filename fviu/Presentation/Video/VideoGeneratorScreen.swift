@@ -2,7 +2,7 @@
 //  VideoGeneratorScreen.swift
 //  fviu
 //
-//  Created by lilit on 21.06.26.
+//  Created by lilit on 23.06.26.
 //
 
 import AVFoundation
@@ -33,63 +33,7 @@ struct VideoGeneratorScreen: View {
                           let urlString = status.video_url,
                           let url = URL(string: urlString)
                 {
-                    VStack(spacing: 16) {
-                        VideoPlayer(player: AVPlayer(url: url))
-                            .frame(height: 300)
-                            .cornerRadius(12)
-
-                        HStack(spacing: 12) {
-                            Button(action: {
-                                if let urlString = viewModel.status?.video_url, let videoURL = URL(string: urlString) {
-                                    shareVideo(url: videoURL)
-                                }
-                            }) {
-                                Text("Share")
-                            }
-                            .buttonStyle(CustomCapsuleButtonStyle(
-                                background: CustomConstants.Colors.receiverBubbleBg,
-                                verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding + 4
-                            ))
-
-                            Button(action: {
-                                Task {
-                                    await viewModel.downloadVideo()
-                                }
-                            }) {
-                                if viewModel.isDownloading {
-                                    ProgressView()
-                                        .progressViewStyle(.circular)
-                                        .tint(.white)
-                                } else {
-                                    Text(.buttonDownload)
-                                }
-                            }
-                            .buttonStyle(CustomCapsuleButtonStyle(
-                                background: CustomConstants.Colors.brandGradient,
-                                verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
-                                isScaled: true
-                            ))
-                            .disabled(viewModel.isDownloading)
-                        }
-                        .padding(.horizontal)
-                        .padding(.bottom, 8)
-
-                        if viewModel.localVideoURL != nil {
-                            HStack {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.green)
-                                Text("Saved to Files")
-                                    .font(.caption)
-                                    .foregroundColor(.green)
-                            }
-                            .padding(12)
-                            .background(Color.green.opacity(0.1))
-                            .cornerRadius(8)
-                        }
-
-                        Spacer()
-                    }
-                    .padding(16)
+                    ResultScreen(url: url)
                 } else {
                     VStack(spacing: 16) {
                         Text(.labelCreateAiVideo)
@@ -185,18 +129,7 @@ struct VideoGeneratorScreen: View {
         }
     }
 
-    private func shareVideo(url: URL) {
-        let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first,
-              let rootViewController = window.rootViewController
-        else {
-            return
-        }
-
-        rootViewController.present(activityVC, animated: true)
-    }
+    
 
     private func openCurrentAppSettings() {
         guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
