@@ -7,20 +7,21 @@
 
 import SwiftUI
 import AVKit
+import SwiftUI
+import AVKit
 
 struct ResultScreen: View {
-    let url: URL
-    let prompt: String
+    @ObservedObject var viewModel: VideoViewModel
     @State private var player: AVPlayer
-    @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
     @State private var showAlertVideoDownloaded = false
-    @State private var cachedVideoURL: URL?
     
-    
-    init(url: URL, prompt: String) {
-        self.url = url
-        self.prompt = prompt
-        _player = State(initialValue: AVPlayer(url: url))
+    init(viewModel: VideoViewModel) {
+        self.viewModel = viewModel
+        if let url = viewModel.completedVideoURL {
+            _player = State(initialValue: AVPlayer(url: url))
+        } else {
+            _player = State(initialValue: AVPlayer())
+        }
     }
     
     var body: some View {
@@ -29,8 +30,7 @@ struct ResultScreen: View {
                 .scaleEffect(1.15)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .clipShape(
-                    RoundedRectangle(
-                        cornerRadius: CustomConstants.CornerRadius.radius)
+                    RoundedRectangle(cornerRadius: CustomConstants.CornerRadius.radius)
                 )
                 .onAppear {
                     player.play()
@@ -40,38 +40,45 @@ struct ResultScreen: View {
                 }
             
             HStack(spacing: 12) {
-                videoActionButtons(for: url)
+                if let url = viewModel.completedVideoURL {
+                    videoActionButtons(for: url)
+                }
             }
             Spacer()
         }
         .padding(16)
+        .navigationTitle("Result")
         .onChange(of: viewModel.localVideoURL) { newValue in
             if newValue != nil {
                 showAlertVideoDownloaded = true
             }
         }
-        .overlay {
-            if showAlertVideoDownloaded {
-                VideoSavedAlert(
-                    showAlertVideoDownloaded: showAlertVideoDownloaded
-                )
+        .onChange(of: viewModel.localVideoURL) { newValue in
+            if newValue != nil {
+                withAnimation {
+                    showAlertVideoDownloaded = true
+                }
+                
+                Task {
+                    try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+                    withAnimation {
+                        showAlertVideoDownloaded = false
+                    }
+                }
             }
         }
         .overlay(alignment: .topTrailing){
-            ReplaceButton(
-                action: { Task {
+            ReplaceButton(action: {
+                Task {
                     await viewModel.generateVideo(prompt: viewModel.prompt)
                 }
-                })
+            })
             .padding(16)
         }
         .onDisappear {
             viewModel.clearCache()
         }
-        
     }
-    
-    
     
     @ViewBuilder
     private func videoActionButtons(for url: URL) -> some View {
@@ -105,6 +112,7 @@ struct ResultScreen: View {
     }
     
     private func shareVideo() async {
+        guard let url = viewModel.completedVideoURL else { return }
         do {
             let fileURL = try await viewModel.getCachedVideoURL(from: url)
             

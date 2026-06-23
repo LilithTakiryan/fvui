@@ -5,21 +5,6 @@
 //  Created by lilit on 23.06.26.
 //
 
-
-//
-//  VideoViewModel.swift
-//  fviu
-//
-//  Created by lilit on 22.06.26.
-//
-
-//
-//  VideoViewModel.swift
-//  fviu
-//
-//  Created by lilit on 22.06.26.
-//
-
 import AVKit
 import Combine
 import os
@@ -47,7 +32,12 @@ final class VideoViewModel: ObservableObject {
     @Published var localVideoURL: URL?
     @Published var player: AVPlayer?
     @Published var shouldShowGenerating = false
+    @Published var navigateToResult = false
 
+    var completedVideoURL: URL? {
+        guard let urlString = status?.video_url else { return nil }
+        return URL(string: urlString)
+    }
 
     init(generateVideoUseCase: GenerateVideoUseCase, getVideoStatusUseCase: GetVideoStatusUseCase) {
         self.generateVideoUseCase = generateVideoUseCase
@@ -58,7 +48,8 @@ final class VideoViewModel: ObservableObject {
         guard !prompt.isEmpty else { return }
         self.prompt = prompt
         isGenerating = true
-        shouldShowGenerating = true 
+        shouldShowGenerating = true
+        navigateToResult = false
         error = nil
         progress = 0
         status = nil
@@ -90,6 +81,7 @@ final class VideoViewModel: ObservableObject {
                     if let urlString = response.video_url, let url = URL(string: urlString) {
                         player = AVPlayer(url: url)
                     }
+                    navigateToResult = true
                     return
                 case "failed":
                     error = response.error ?? "Generation failed"
@@ -114,7 +106,6 @@ final class VideoViewModel: ObservableObject {
             isGenerating = false
         }
     }
-
 
     func downloadVideo(from remoteURL: URL) async {
         isDownloading = true
@@ -152,6 +143,7 @@ final class VideoViewModel: ObservableObject {
             isDownloading = false
         }
     }
+
     func getCachedVideoURL(from remoteURL: URL) async throws -> URL {
         let fileManager = FileManager.default
         let cacheDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
@@ -167,12 +159,12 @@ final class VideoViewModel: ObservableObject {
         }
         
         try fileManager.moveItem(at: tempFileURL, to: cachedURL)
-        
         try fileManager.setAttributes([.protectionKey: FileProtectionType.none], ofItemAtPath: cachedURL.path)
         
         logger.debug("cached video to: \(cachedURL.path)")
         return cachedURL
     }
+
     func clearCache() {
         let fileManager = FileManager.default
         let cacheDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
@@ -183,41 +175,41 @@ final class VideoViewModel: ObservableObject {
     }
 
     @Published var savedVideos: [VideoHistoryItem] = []
-        @Published var isLoading = false
+    @Published var isLoading = false
 
-        func fetchSavedVideos() async {
-            isLoading = true
-            let fileManager = FileManager.default
-            guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-                isLoading = false
-                return
-            }
-            
-            do {
-                let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
-                let videoURLs = fileURLs.filter { $0.pathExtension.lowercased() == "mp4" }
-                
-                var items: [VideoHistoryItem] = []
-                for url in videoURLs {
-                    let thumbnail = await generateThumbnail(for: url)
-                    items.append(VideoHistoryItem(url: url, thumbnail: thumbnail))
-                }
-                self.savedVideos = items.sorted(by: { $0.url.lastPathComponent > $1.url.lastPathComponent })
-            } catch {
-                self.savedVideos = []
-            }
+    func fetchSavedVideos() async {
+        isLoading = true
+        let fileManager = FileManager.default
+        guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
             isLoading = false
+            return
         }
-
-        private func generateThumbnail(for url: URL) async -> UIImage? {
-            let asset = AVAsset(url: url)
-            let generator = AVAssetImageGenerator(asset: asset)
-            generator.appliesPreferredTrackTransform = true
-            do {
-                let (cgImage, _) = try await generator.image(at: CMTime(seconds: 0, preferredTimescale: 60))
-                return UIImage(cgImage: cgImage)
-            } catch {
-                return nil
+        
+        do {
+            let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
+            let videoURLs = fileURLs.filter { $0.pathExtension.lowercased() == "mp4" }
+            
+            var items: [VideoHistoryItem] = []
+            for url in videoURLs {
+                let thumbnail = await generateThumbnail(for: url)
+                items.append(VideoHistoryItem(url: url, thumbnail: thumbnail))
             }
+            self.savedVideos = items.sorted(by: { $0.url.lastPathComponent > $1.url.lastPathComponent })
+        } catch {
+            self.savedVideos = []
         }
+        isLoading = false
+    }
+
+    private func generateThumbnail(for url: URL) async -> UIImage? {
+        let asset = AVAsset(url: url)
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.appliesPreferredTrackTransform = true
+        do {
+            let (cgImage, _) = try await generator.image(at: CMTime(seconds: 0, preferredTimescale: 60))
+            return UIImage(cgImage: cgImage)
+        } catch {
+            return nil
+        }
+    }
 }

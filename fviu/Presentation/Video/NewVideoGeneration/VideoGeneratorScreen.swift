@@ -28,12 +28,6 @@ struct VideoGeneratorScreen: View {
             VStack(spacing: 16) {
                 if viewModel.isGenerating || viewModel.shouldShowGenerating {
                     GeneratingView()
-                } else if let status = viewModel.status,
-                          status.status.lowercased() == "completed",
-                          let urlString = status.video_url,
-                          let url = URL(string: urlString)
-                {
-                    ResultScreen(url: url, prompt: viewModel.prompt)  
                 } else {
                     VStack(spacing: 16) {
                         Text(.labelCreateAiVideo)
@@ -79,11 +73,10 @@ struct VideoGeneratorScreen: View {
                 }
             }
         }
-//        .navigationTitle(.labelResult)
         .toolbarBackground(Color(red: 0.11, green: 0.09, blue: 0.13), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
-        .toolbar{
+        .toolbar {
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 12) {
                     Image(.chatIcon)
@@ -108,6 +101,9 @@ struct VideoGeneratorScreen: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $viewModel.navigateToResult) {
+            ResultScreen(viewModel: viewModel)
+        }
         .alert(.warningPhotoAccessRequired, isPresented: $showPermissionAlert) {
             Button(.buttonOpenSettings, action: openCurrentAppSettings)
             Button(.buttonCancel, role: .cancel) {
@@ -155,8 +151,6 @@ struct VideoGeneratorScreen: View {
             showPermissionAlert = false
         }
     }
-
-    
 
     private func openCurrentAppSettings() {
         guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
