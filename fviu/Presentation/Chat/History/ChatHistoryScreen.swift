@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChatHistoryScreen: View {
-    var viewModel: ChatViewModel
+    @StateObject private var viewModel = DependencyContainer.shared.makeChatViewModel()
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()

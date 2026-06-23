@@ -60,17 +60,17 @@ struct VideoGeneratorScreen: View {
                             .background(Color.red.opacity(0.1))
                             .cornerRadius(8)
                         }
-
+                        
                         Button(action: {
                             Task { await checkPhotoPermission() }
                         }) {
                             Text(.labelGenerateVideo)
-                                .frame(maxWidth: .infinity)
-                                .padding(12)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(CustomConstants.CornerRadius.radius)
                         }
+                        .buttonStyle(CustomCapsuleButtonStyle(
+                            background: CustomConstants.Colors.brandGradient,
+                            verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
+                            isScaled: true
+                        ))
                         .disabled(inputText.isEmpty || viewModel.isGenerating)
 
                         Spacer()
@@ -79,7 +79,34 @@ struct VideoGeneratorScreen: View {
                 }
             }
         }
-        .navigationTitle(.labelResult)
+//        .navigationTitle(.labelResult)
+        .toolbarBackground(Color(red: 0.11, green: 0.09, blue: 0.13), for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbar{
+            ToolbarItem(placement: .principal) {
+                HStack(spacing: 12) {
+                    Image(.chatIcon)
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("AI Video")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: VideoHistoryScreen()) {
+                    Image(.history)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.white)
+                }
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
         .alert(.warningPhotoAccessRequired, isPresented: $showPermissionAlert) {
             Button(.buttonOpenSettings, action: openCurrentAppSettings)

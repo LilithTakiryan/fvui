@@ -21,11 +21,11 @@ struct ChatScreen: View {
             VStack {
                 ScrollView {
                     if !viewModel.messages.isEmpty {
-                        ChatContentListView(viewModel: viewModel)
+                        ChatContentListView()
                     }
                 }
                 
-                ChatBottomInputField(viewModel: viewModel)
+                ChatBottomInputField()
             }
             
             
@@ -78,7 +78,7 @@ struct ChatScreen: View {
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: ChatHistoryScreen(viewModel: viewModel)) {
+                NavigationLink(destination: ChatHistoryScreen()) {
                     Image(.history)
                         .resizable()
                         .frame(width: 24, height: 24)
