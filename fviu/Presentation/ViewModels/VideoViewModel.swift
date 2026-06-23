@@ -25,6 +25,12 @@ import Combine
 import os
 import Photos
 
+struct VideoHistoryItem: Identifiable {
+    let id = UUID()
+    let url: URL
+    let thumbnail: UIImage?
+}
+
 @MainActor
 final class VideoViewModel: ObservableObject {
     private let generateVideoUseCase: GenerateVideoUseCase
@@ -175,4 +181,43 @@ final class VideoViewModel: ObservableObject {
         try? fileManager.removeItem(at: cachedURL)
         logger.debug("cleared cache")
     }
+
+    @Published var savedVideos: [VideoHistoryItem] = []
+        @Published var isLoading = false
+
+        func fetchSavedVideos() async {
+            isLoading = true
+            let fileManager = FileManager.default
+            guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                isLoading = false
+                return
+            }
+            
+            do {
+                let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
+                let videoURLs = fileURLs.filter { $0.pathExtension.lowercased() == "mp4" }
+                
+                var items: [VideoHistoryItem] = []
+                for url in videoURLs {
+                    let thumbnail = await generateThumbnail(for: url)
+                    items.append(VideoHistoryItem(url: url, thumbnail: thumbnail))
+                }
+                self.savedVideos = items.sorted(by: { $0.url.lastPathComponent > $1.url.lastPathComponent })
+            } catch {
+                self.savedVideos = []
+            }
+            isLoading = false
+        }
+
+        private func generateThumbnail(for url: URL) async -> UIImage? {
+            let asset = AVAsset(url: url)
+            let generator = AVAssetImageGenerator(asset: asset)
+            generator.appliesPreferredTrackTransform = true
+            do {
+                let (cgImage, _) = try await generator.image(at: CMTime(seconds: 0, preferredTimescale: 60))
+                return UIImage(cgImage: cgImage)
+            } catch {
+                return nil
+            }
+        }
 }
