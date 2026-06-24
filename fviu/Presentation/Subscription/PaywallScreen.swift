@@ -48,12 +48,12 @@ struct PaywallScreen: View {
             VStack(spacing: 24) {
                 Spacer()
 
-                headerSection
-                featuresList
-                cardsSection
-                cancelIndicator
-                actionButton
-                footerLinks
+                HeaderSection()
+                FeaturesList()
+                CardsSection(options: $options, selectedId: $selectedId)
+                CancelIndicator()
+                ActionButton(options: options, selectedId: selectedId, subManager: subManager)
+                FooterLinks(subManager: subManager)
 
                 Spacer()
             }
@@ -86,7 +86,6 @@ struct PaywallScreen: View {
                 }
             }
         }
-
         .onChange(of: subManager.apphudProducts) { _ in
             loadApphudProducts()
         }
@@ -117,139 +116,6 @@ struct PaywallScreen: View {
 
         if let firstId = options.first?.id, selectedId == "yearly_product_id" || selectedId == "monthly_product_id" {
             selectedId = firstId
-        }
-    }
-
-    private var headerSection: some View {
-        Text("Create anything you want")
-            .foregroundColor(.white)
-            .font(CustomConstants.Typography.bold34)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 8)
-    }
-
-    private var cardsSection: some View {
-        VStack(spacing: 12) {
-            ForEach(options) { option in
-                subscriptionCard(for: option)
-            }
-        }
-    }
-
-    private func subscriptionCard(for option: SubscriptionOption) -> some View {
-        HStack(alignment: .center) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Text(option.duration)
-                        .font(CustomConstants.Typography.regular16)
-                    Text("\(option.weeklyPrice) / week")
-                        .font(CustomConstants.Typography.regular14)
-                }
-                .foregroundColor(.white)
-
-                Text(option.fullPrice)
-                    .font(CustomConstants.Typography.medium16)
-                    .foregroundColor(CustomConstants.Paywall.subTextColor)
-            }
-
-            Spacer()
-
-            if let badgeText = option.discountBadge {
-                Text(badgeText)
-                    .font(CustomConstants.Typography.regular16)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(CustomConstants.Colors.brandGradient)
-                    .clipShape(Capsule())
-            }
-        }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 20)
-        .brandCardStyle(
-            cornerRadius: CustomConstants.CornerRadius.radius,
-            isSelected: selectedId == option.id
-        )
-        .onTapGesture {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                selectedId = option.id
-            }
-        }
-    }
-
-    private var cancelIndicator: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "clock.arrow.circlepath")
-            Text("Cancel anytime")
-                .font(.custom("SF Pro Display", size: 14))
-        }
-        .font(.system(size: 15, weight: .medium))
-        .foregroundColor(CustomConstants.Paywall.subTextColor)
-    }
-
-    private var actionButton: some View {
-        Button(action: {
-            if let selectedOption = options.first(where: { $0.id == selectedId }),
-               let realProduct = selectedOption.rawProduct
-            {
-                subManager.purchase(product: realProduct) { success in
-                    if success { print("purchase success") }
-                }
-            } else {
-                print("not loaded yet")
-            }
-        }) {
-            Text("Unlock now")
-                .font(CustomConstants.Typography.spProDisplayRegular12)
-        }
-        .buttonStyle(CustomCapsuleButtonStyle(
-            background: CustomConstants.Colors.brandGradient,
-            verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
-            isScaled: true
-        ))
-    }
-
-    private var featuresList: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            featureRow(icon: .sparkles, title: "Get results in seconds")
-            featureRow(icon: .edit, title: "Turn any text into better writing")
-            featureRow(icon: .text, title: "Simplify complex information")
-            featureRow(icon: .image, title: "Create content with AI templates")
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 16)
-    }
-
-    private var footerLinks: some View {
-        HStack {
-            Text("Privacy policy")
-                .font(CustomConstants.Typography.spProDisplayRegular11)
-            Spacer()
-            Button(action: {
-                subManager.restorePurchases()
-            }) {
-                Text("Restore purchases")
-                    .font(CustomConstants.Typography.spProDisplayRegular11)
-            }
-            Spacer()
-            Text("Terms of use")
-                .font(CustomConstants.Typography.spProDisplayRegular11)
-        }
-        .font(.system(size: 14, weight: .medium))
-        .foregroundColor(CustomConstants.Paywall.subTextColor)
-        .padding(.horizontal, 10)
-    }
-
-    private func featureRow(icon: ImageResource, title: String) -> some View {
-        HStack(spacing: 12) {
-            Image(icon)
-                .renderingMode(.original)
-                .resizable()
-                .frame(width: 20, height: 20)
-
-            Text(title)
-                .font(CustomConstants.Typography.medium16)
-                .foregroundColor(.white)
         }
     }
 }

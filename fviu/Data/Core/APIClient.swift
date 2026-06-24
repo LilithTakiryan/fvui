@@ -36,7 +36,7 @@ final class APIClient: IAPIClient {
         return (data, response)
     }
 
-    func request<T: Decodable>(_ endpoint: IEndpoint, response _: T.Type) async throws -> T {
+    func request<T: Decodable & Sendable>(_ endpoint: IEndpoint, response _: T.Type) async throws -> T {
         let (data, _) = try await performRequest(endpoint)
         do {
             return try decoder.decode(T.self, from: data)
