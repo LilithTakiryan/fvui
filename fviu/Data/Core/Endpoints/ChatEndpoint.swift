@@ -22,8 +22,8 @@ enum ChatEndpoint: IEndpoint {
             path = "/dola/chats/\(id)/messages"
         }
 
-        var components = URLComponents(string: "\(API.baseURL)\(path)")!
-        var queryItems = API.defaultQueryItems
+        var components = URLComponents(string: "\(APIconstants.baseURL)\(path)")!
+        var queryItems = APIconstants.defaultQueryItems
 
         if let limit = extractLimit() {
             queryItems.append(URLQueryItem(name: "limit", value: String(limit)))

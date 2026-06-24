@@ -41,10 +41,10 @@ final class DependencyContainer: Sendable {
         }
 
         let service = PixverseNetworkService(api: apiClient)
-        let repository = VideoRepositoryImpl(service: service)
+        let repository = ext2VideoRepositoryImpl(service: service)
 
         let viewModel = VideoViewModel(
-            generateVideoUseCase: GenerateVideoUseCase(repo: repository),
+            generateVideoUseCase: GenerateVideoFromTextUseCase(repo: repository),
             getVideoStatusUseCase: GetVideoStatusUseCase(repo: repository)
         )
 

@@ -11,7 +11,7 @@ import SwiftUI
 struct BaseApp: App {
     @StateObject private var subscriptionManager: SubscriptionManager
 
-    let paymentToken = API.TokenProvider.payment.value
+    let paymentToken = APIconstants.TokenProvider.payment.value
 
     init() {
         Apphud.start(apiKey: paymentToken)

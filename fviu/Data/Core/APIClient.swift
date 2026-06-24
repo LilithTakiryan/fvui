@@ -9,16 +9,21 @@ import Combine
 import Foundation
 import os
 
+protocol IAPIClient {
+    func request<T: Decodable>(_ endpoint: IEndpoint, response: T.Type) async throws -> T
+    func request(_ endpoint: IEndpoint) async throws
+}
+
 final class APIClient: IAPIClient {
     private let session: URLSession
     private let decoder: JSONDecoder
-    private let tokenProvider: API.TokenProvider
+    private let tokenProvider: APIconstants.TokenProvider
     private let logger = Logger(subsystem: "com.app.network", category: "APIClient")
 
     init(
         session: URLSession = .shared,
         decoder: JSONDecoder = .init(),
-        tokenProvider: API.TokenProvider = .bearer
+        tokenProvider: APIconstants.TokenProvider = .bearer
     ) {
         self.session = session
         self.decoder = decoder

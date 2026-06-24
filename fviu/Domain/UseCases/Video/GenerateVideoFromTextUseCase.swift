@@ -5,10 +5,10 @@
 //  Created by lilit on 22.06.26.
 //
 
-struct GenerateVideoUseCase {
-    private let repo: IVideoRepository
+struct GenerateVideoFromTextUseCase {
+    private let repo: IText2VideoRepository
 
-    init(repo: IVideoRepository) {
+    init(repo: IText2VideoRepository) {
         self.repo = repo
     }
 

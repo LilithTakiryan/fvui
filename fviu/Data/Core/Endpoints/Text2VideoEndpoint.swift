@@ -9,19 +9,19 @@ import Combine
 import Foundation
 import os
 
-enum VideoEndpoint: IEndpoint {
+enum Text2VideoEndpoint: IEndpoint {
     case generate(String)
     case status(Int)
 
     func makeRequest() throws -> URLRequest {
         let path: String
         switch self {
-        case .generate: path = "/pixverse/api/v1/text2video"
-        case .status: path = "/pixverse/api/v1/status"
+        case .generate: path = "\(APIconstants.baseVideo)text2video"
+        case .status: path = "\(APIconstants.baseVideo)status"
         }
 
-        var components = URLComponents(string: "\(API.baseURL)\(path)")!
-        var queryItems = API.defaultQueryItems
+        var components = URLComponents(string: "\(APIconstants.baseURL)\(path)")!
+        var queryItems = APIconstants.defaultQueryItems
         if case let .status(id) = self {
             queryItems.append(URLQueryItem(name: "id", value: String(id)))
         }

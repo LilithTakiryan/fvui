@@ -6,11 +6,13 @@
 //
 import Foundation
 
-enum API {
+enum APIconstants {
     static let baseURL = "https://nebulaapps.site"
+    static let appId = "com.test.test"
+    static let baseVideo = "/pixverse/api/v1/"
     static let defaultQueryItems = [
-        URLQueryItem(name: "user_id", value: "test_user"),
-        URLQueryItem(name: "app_id", value: "com.test.test"),
+        URLQueryItem(name: "user_id", value: APIconstants.TokenProvider.payment.value),
+        URLQueryItem(name: "app_id", value: appId),
     ]
 
     enum TokenProvider: String {

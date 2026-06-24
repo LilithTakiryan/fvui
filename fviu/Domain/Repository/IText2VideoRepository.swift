@@ -5,7 +5,7 @@
 //  Created by lilit on 24.06.26.
 //
 
-protocol IVideoRepository {
+protocol IText2VideoRepository {
     func generate(prompt: String) async throws -> Int
-    func status(id: Int) async throws -> VideoStatusResponse
+    func status(id: Int) async throws -> Text2VideoStatusResponse
 }

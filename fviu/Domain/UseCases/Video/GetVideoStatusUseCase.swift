@@ -6,13 +6,13 @@
 //
 
 struct GetVideoStatusUseCase {
-    private let repo: IVideoRepository
+    private let repo: IText2VideoRepository
 
-    init(repo: IVideoRepository) {
+    init(repo: IText2VideoRepository) {
         self.repo = repo
     }
 
-    func execute(id: Int) async throws -> VideoStatusResponse {
+    func execute(id: Int) async throws -> Text2VideoStatusResponse {
         try await repo.status(id: id)
     }
 }

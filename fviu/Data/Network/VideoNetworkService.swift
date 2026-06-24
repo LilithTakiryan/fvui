@@ -6,8 +6,8 @@
 //
 
 protocol VideoNetworkService: Sendable {
-    func generateVideo(prompt: String) async throws -> Int
-    func getStatus(videoID: Int) async throws -> VideoStatusResponse
+    func generateVideoFromText(prompt: String) async throws -> Int
+    func getStatus(videoID: Int) async throws -> Text2VideoStatusResponse
 }
 
 final class PixverseNetworkService: VideoNetworkService {
@@ -17,12 +17,12 @@ final class PixverseNetworkService: VideoNetworkService {
         self.api = api
     }
 
-    func getStatus(videoID: Int) async throws -> VideoStatusResponse {
-        try await api.request(VideoEndpoint.status(videoID), response: VideoStatusResponse.self)
+    func getStatus(videoID: Int) async throws -> Text2VideoStatusResponse {
+        try await api.request(Text2VideoEndpoint.status(videoID), response: Text2VideoStatusResponse.self)
     }
 
-    func generateVideo(prompt: String) async throws -> Int {
-        let result = try await api.request(VideoEndpoint.generate(prompt), response: Text2VideoResponse.self)
+    func generateVideoFromText(prompt: String) async throws -> Int {
+        let result = try await api.request(Text2VideoEndpoint.generate(prompt), response: Text2VideoResponse.self)
         return result.video_id
     }
 }

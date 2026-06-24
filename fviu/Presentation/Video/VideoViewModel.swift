@@ -18,13 +18,13 @@ struct VideoHistoryItem: Identifiable {
 
 @MainActor
 final class VideoViewModel: ObservableObject {
-    private let generateVideoUseCase: GenerateVideoUseCase
+    private let generateVideoUseCase: GenerateVideoFromTextUseCase
     private let getVideoStatusUseCase: GetVideoStatusUseCase
     private let logger = Logger(subsystem: "com.video", category: "VideoViewModel")
 
     @Published var prompt = ""
     @Published var videoID = 0
-    @Published var status: VideoStatusResponse?
+    @Published var status: Text2VideoStatusResponse?
     @Published var error: String?
     @Published var isGenerating = false
     @Published var progress: Double = 0
@@ -39,7 +39,7 @@ final class VideoViewModel: ObservableObject {
         return URL(string: urlString)
     }
 
-    init(generateVideoUseCase: GenerateVideoUseCase, getVideoStatusUseCase: GetVideoStatusUseCase) {
+    init(generateVideoUseCase: GenerateVideoFromTextUseCase, getVideoStatusUseCase: GetVideoStatusUseCase) {
         self.generateVideoUseCase = generateVideoUseCase
         self.getVideoStatusUseCase = getVideoStatusUseCase
     }
