@@ -11,9 +11,9 @@ protocol VideoNetworkService: Sendable {
 }
 
 final class PixverseNetworkService: VideoNetworkService {
-    private let api: APIClientProtocol
+    private let api: IAPIClient
 
-    init(api: APIClientProtocol = APIClient(tokenProvider: .bearer)) {
+    init(api: IAPIClient = APIClient(tokenProvider: .bearer)) {
         self.api = api
     }
 

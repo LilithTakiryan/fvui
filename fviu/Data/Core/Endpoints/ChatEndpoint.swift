@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import os
 
-enum ChatEndpoint: Endpoint {
+enum ChatEndpoint: IEndpoint {
     case chats(limit: Int?)
     case messages(chatID: String, limit: Int?)
     case send(chatID: String, text: String)

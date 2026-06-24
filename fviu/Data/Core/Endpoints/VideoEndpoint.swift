@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import os
 
-enum VideoEndpoint: Endpoint {
+enum VideoEndpoint: IEndpoint {
     case generate(String)
     case status(Int)
 

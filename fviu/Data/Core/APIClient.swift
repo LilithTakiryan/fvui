@@ -9,33 +9,7 @@ import Combine
 import Foundation
 import os
 
-protocol Endpoint {
-    func makeRequest() throws -> URLRequest
-}
-
-protocol APIClientProtocol {
-    func request<T: Decodable>(_ endpoint: Endpoint, response: T.Type) async throws -> T
-    func request(_ endpoint: Endpoint) async throws
-}
-
-enum API {
-    static let baseURL = "https://nebulaapps.site"
-    static let defaultQueryItems = [
-        URLQueryItem(name: "user_id", value: "test_user"),
-        URLQueryItem(name: "app_id", value: "com.test.test"),
-    ]
-
-    enum TokenProvider: String {
-        case bearer = "BearerToken"
-        case payment = "PaymentToken"
-
-        var value: String {
-            Bundle.main.object(forInfoDictionaryKey: rawValue) as? String ?? ""
-        }
-    }
-}
-
-final class APIClient: APIClientProtocol {
+final class APIClient: IAPIClient {
     private let session: URLSession
     private let decoder: JSONDecoder
     private let tokenProvider: API.TokenProvider
@@ -51,7 +25,7 @@ final class APIClient: APIClientProtocol {
         self.tokenProvider = tokenProvider
     }
 
-    private func performRequest(_ endpoint: Endpoint) async throws -> (Data, URLResponse) {
+    private func performRequest(_ endpoint: IEndpoint) async throws -> (Data, URLResponse) {
         var request = try endpoint.makeRequest()
 
         request.setValue("Bearer \(tokenProvider.value)", forHTTPHeaderField: "Authorization")
@@ -62,7 +36,7 @@ final class APIClient: APIClientProtocol {
         return (data, response)
     }
 
-    func request<T: Decodable>(_ endpoint: Endpoint, response _: T.Type) async throws -> T {
+    func request<T: Decodable>(_ endpoint: IEndpoint, response _: T.Type) async throws -> T {
         let (data, _) = try await performRequest(endpoint)
         do {
             return try decoder.decode(T.self, from: data)
@@ -72,7 +46,7 @@ final class APIClient: APIClientProtocol {
         }
     }
 
-    func request(_ endpoint: Endpoint) async throws {
+    func request(_ endpoint: IEndpoint) async throws {
         _ = try await performRequest(endpoint)
     }
 

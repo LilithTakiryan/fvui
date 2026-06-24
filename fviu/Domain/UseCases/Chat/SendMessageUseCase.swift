@@ -6,9 +6,9 @@
 //
 
 struct SendMessageUseCase {
-    private let repo: ChatRepository
+    private let repo: IChatRepository
 
-    init(repo: ChatRepository) {
+    init(repo: IChatRepository) {
         self.repo = repo
     }
 

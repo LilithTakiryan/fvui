@@ -6,9 +6,9 @@
 //
 
 struct GenerateVideoUseCase {
-    private let repo: VideoRepository
+    private let repo: IVideoRepository
 
-    init(repo: VideoRepository) {
+    init(repo: IVideoRepository) {
         self.repo = repo
     }
 

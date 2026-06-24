@@ -5,13 +5,7 @@
 //  Created by lilit on 22.06.26.
 //
 
-protocol ChatRepository {
-    func chats() async throws -> [DolaChatItem]
-    func messages(chatID: String) async throws -> [ChatMessage]
-    func send(chatID: String, text: String) async throws -> String
-}
-
-final class ChatRepositoryImpl: ChatRepository {
+final class ChatRepositoryImpl: IChatRepository {
     private let service: ChatNetworkService
     init(service: ChatNetworkService) {
         self.service = service

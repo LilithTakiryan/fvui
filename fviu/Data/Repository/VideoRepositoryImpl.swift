@@ -5,12 +5,7 @@
 //  Created by lilit on 22.06.26.
 //
 
-protocol VideoRepository {
-    func generate(prompt: String) async throws -> Int
-    func status(id: Int) async throws -> VideoStatusResponse
-}
-
-final class VideoRepositoryImpl: VideoRepository {
+final class VideoRepositoryImpl: IVideoRepository {
     private let service: VideoNetworkService
     init(service: VideoNetworkService) {
         self.service = service
