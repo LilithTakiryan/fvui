@@ -5,33 +5,50 @@
 //  Created by lilit on 24.06.26.
 //
 
-
 import SwiftUI
+import ApphudSDK
 
 struct ActionButton: View {
     let options: [SubscriptionOption]
     let selectedId: String?
     @ObservedObject var subManager: SubscriptionManager
-
+    
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
-        Button(action: {
-            if let selectedOption = options.first(where: { $0.id == selectedId }),
-               let realProduct = selectedOption.rawProduct
-            {
-                subManager.purchase(product: realProduct) { success in
-                    if success { print("purchase success") }
-                }
+        Button(action: handlePurchase) {
+            if subManager.isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
             } else {
-                print("not loaded yet")
+                Text("Unlock now")
+                    .font(CustomConstants.Typography.semiBold16)
+                    .foregroundColor(.white)
             }
-        }) {
-            Text("Unlock now")
-                .font(CustomConstants.Typography.spProDisplayRegular12)
         }
         .buttonStyle(CustomCapsuleButtonStyle(
             background: CustomConstants.Colors.brandGradient,
             verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
             isScaled: true
         ))
+        .frame(height: 48)
+        .frame(maxWidth: .infinity)
+        .cornerRadius(12)
+        .disabled(selectedId == nil || subManager.isLoading)
+    }
+    
+    private func handlePurchase() {
+        guard let selectedId = selectedId,
+              let selectedOption = options.first(where: { $0.id == selectedId }),
+              let product = selectedOption.rawProduct else {
+            return
+        }
+        
+        Task {
+            let success = await subManager.purchase(product: product)
+            if success {
+                dismiss()
+            }
+        }
     }
 }

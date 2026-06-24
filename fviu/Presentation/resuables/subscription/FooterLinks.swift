@@ -16,7 +16,9 @@ struct FooterLinks: View {
                 .font(CustomConstants.Typography.spProDisplayRegular11)
             Spacer()
             Button(action: {
-                subManager.restorePurchases()
+                Task {
+                        await subManager.restorePurchases()
+                    }
             }) {
                 Text("Restore purchases")
                     .font(CustomConstants.Typography.spProDisplayRegular11)

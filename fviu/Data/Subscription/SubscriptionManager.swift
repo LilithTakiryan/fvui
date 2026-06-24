@@ -10,7 +10,8 @@ import Combine
 import Foundation
 import StoreKit
 
-class SubscriptionManager: NSObject, ObservableObject, ApphudDelegate {
+@MainActor
+final class SubscriptionManager: NSObject, ObservableObject, ApphudDelegate {
     static let shared = SubscriptionManager()
 
     @Published var hasPremium: Bool = false
@@ -19,84 +20,92 @@ class SubscriptionManager: NSObject, ObservableObject, ApphudDelegate {
 
     override private init() {
         super.init()
-
         Apphud.setDelegate(self)
-
-        updateSubscriptionStatus()
+        updateSubscriptionStatusSync()
     }
 
-    func updateSubscriptionStatus() {
-        DispatchQueue.main.async {
+    nonisolated func updateSubscriptionStatus() {
+        Task { @MainActor in
             self.hasPremium = Apphud.hasActiveSubscription()
         }
     }
 
     private func parsePaywalls(_ paywalls: [ApphudPaywall]) {
-        for _ in paywalls {}
-
-        if let mainPaywall = paywalls.first(where: { $0.identifier == "main" }) {
-            DispatchQueue.main.async {
-                self.subManagerProductsUpdate(mainPaywall.products)
-            }
-        } else {
+        let targetPaywall = paywalls.first(where: { $0.identifier == "main" }) ?? paywalls.first
+        
+        guard let paywall = targetPaywall else {
             print("paywall not found")
-            if let firstPw = paywalls.first {
-                DispatchQueue.main.async {
-                    self.subManagerProductsUpdate(firstPw.products)
-                }
+            return
+        }
+        
+        apphudProducts = paywall.products
+    }
+
+    func purchase(product: ApphudProduct) async -> Bool {
+        guard !isLoading else { return false }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        let result = await Apphud.purchaseAsync(product)
+        updateSubscriptionStatusSync()
+
+        if let subscription = result.subscription, subscription.isActive() {
+            return true
+        }
+        return result.success
+    }
+
+    func restorePurchases() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        await Apphud.restorePurchasesAsync()
+        updateSubscriptionStatusSync()
+    }
+
+    private func updateSubscriptionStatusSync() {
+        hasPremium = Apphud.hasActiveSubscription()
+    }
+
+
+    nonisolated func paywallsDidLoad(_ paywalls: [ApphudPaywall]) {
+        Task { @MainActor [weak self] in
+            self?.parsePaywalls(paywalls)
+        }
+    }
+
+    nonisolated func apphudDidChangeSubscriptions(_: [ApphudSubscription]) {
+        Task { @MainActor in
+            self.updateSubscriptionStatus()
+        }
+    }
+
+    nonisolated func apphudDidFetchNonRenewingPurchases(_: [ApphudNonRenewingPurchase]) {
+        Task { @MainActor in
+            self.updateSubscriptionStatus()
+        }
+    }
+}
+
+
+import ApphudSDK
+
+
+extension Apphud {
+    static func purchaseAsync(_ product: ApphudProduct) async -> ApphudPurchaseResult {
+        await withCheckedContinuation { continuation in
+            Apphud.purchase(product) { result in
+                continuation.resume(returning: result)
             }
         }
     }
 
-    private func subManagerProductsUpdate(_ products: [ApphudProduct]) {
-        apphudProducts = products
-        for _ in products {}
-    }
-
-    func purchase(product: ApphudProduct, completion: @escaping (Bool) -> Void) {
-        guard !isLoading else { return }
-
-        DispatchQueue.main.async { self.isLoading = true }
-
-        Apphud.purchase(product) { [weak self] result in
-            guard let self = self else { return }
-
-            DispatchQueue.main.async {
-                self.isLoading = false
-                self.updateSubscriptionStatus()
-
-                if let subscription = result.subscription, subscription.isActive() {
-                    completion(true)
-                } else if result.success {
-                    completion(true)
-                } else {
-                    completion(false)
-                }
+    static func restorePurchasesAsync() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            Apphud.restorePurchases { _ in
+                continuation.resume()
             }
         }
-    }
-
-    func restorePurchases() {
-        DispatchQueue.main.async { self.isLoading = true }
-
-        Apphud.restorePurchases { [weak self] _ in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                self.isLoading = false
-                self.updateSubscriptionStatus()
-            }
-        }
-    }
-
-    func paywallsDidLoad(_ paywalls: [ApphudPaywall]) {
-        parsePaywalls(paywalls)
-    }
-
-    func apphudDidChangeSubscriptions(_: [ApphudSubscription]) {
-        updateSubscriptionStatus()
-    }
-
-    func apphudDidFetchNonRenewingPurchases(_: [ApphudNonRenewingPurchase]) {
-        updateSubscriptionStatus()
     }
 }

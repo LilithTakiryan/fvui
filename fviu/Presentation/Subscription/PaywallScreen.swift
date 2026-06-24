@@ -1,5 +1,5 @@
 //
-//  SubscriptionOption.swift
+//  PaywallScreen.swift
 //  fviu
 //
 //  Created by lilit on 19.06.26.
@@ -33,6 +33,7 @@ struct PaywallScreen: View {
 
     @State private var selectedId: String?
     @State private var showButton = false
+    @State private var setupTask: Task<Void, Never>?
 
     var body: some View {
         ZStack {
@@ -80,7 +81,8 @@ struct PaywallScreen: View {
 
             loadApphudProducts()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            setupTask = Task {
+                try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
                 withAnimation(.easeOut(duration: 0.3)) {
                     showButton = true
                 }
@@ -88,6 +90,9 @@ struct PaywallScreen: View {
         }
         .onChange(of: subManager.apphudProducts) { _ in
             loadApphudProducts()
+        }
+        .onDisappear {
+            setupTask?.cancel()
         }
     }
 
