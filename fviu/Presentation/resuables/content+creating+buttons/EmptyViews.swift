@@ -51,11 +51,12 @@ struct EmptyChatView: View {
                     .font(CustomConstants.Typography.bold24)
                     .foregroundColor(.white)
             }
-            
+
             Text("Ask questions, brainstorm ideas, write content, or get instant answers.")
                 .font(CustomConstants.Typography.regular14)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
-        }    }
+        }
+    }
 }

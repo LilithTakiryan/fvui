@@ -63,8 +63,8 @@ final class ChatViewModel: ObservableObject, Sendable {
         }
         isLoadingChats = false
     }
-    
-    func cleanChat(){
+
+    func cleanChat() {
         messages = []
     }
 

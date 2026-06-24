@@ -17,7 +17,7 @@ struct VideoSavedAlert: View {
             Image(systemName: "checkmark")
                 .font(.system(size: 40, weight: .bold))
                 .foregroundStyle(CustomConstants.Colors.brandGradient)
-            
+
             Text(.alertVideoSaved)
                 .font(CustomConstants.Typography.regular16)
                 .multilineTextAlignment(.center)
@@ -30,11 +30,10 @@ struct VideoSavedAlert: View {
         .cornerRadius(CustomConstants.CornerRadius.radius)
         .transition(.scale.combined(with: .opacity))
         .task {
-            try? await Task.sleep(nanoseconds: 2_500_000_000) //2.5 seconds
+            try? await Task.sleep(nanoseconds: 2_500_000_000) // 2.5 seconds
             withAnimation {
                 showAlertVideoDownloaded = false
             }
-        }    }
+        }
+    }
 }
-
-

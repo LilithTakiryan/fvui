@@ -13,7 +13,7 @@ import SwiftUI
 struct ChatScreen: View {
     @StateObject private var viewModel = DependencyContainer.shared.makeChatViewModel()
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ZStack {
             Color.black
@@ -24,15 +24,13 @@ struct ChatScreen: View {
                         ChatContentListView()
                     }
                 }
-                
+
                 ChatBottomInputField()
             }
-            
-            
+
             if viewModel.messages.isEmpty {
                 EmptyChatView()
                     .padding(.horizontal, 16)
-                
             }
         }
         .padding(.horizontal, 16)
@@ -51,18 +49,18 @@ struct ChatScreen: View {
                         .foregroundColor(.white)
                 }
             }
-            
+
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 12) {
                     Image(.chatIcon)
                         .resizable()
                         .frame(width: 32, height: 32)
-                    
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text("AI Chat")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-                        
+
                         Text(Date().formatted(
                             .dateTime
                                 .day(.twoDigits)
@@ -76,7 +74,7 @@ struct ChatScreen: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: ChatHistoryScreen()) {
                     Image(.history)

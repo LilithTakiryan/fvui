@@ -35,7 +35,7 @@ struct ChatContentListView: View {
                                 }
                             }
                         }
-                        
+
                         if viewModel.isAiThinking {
                             HStack {
                                 TypingIndicatorView()
@@ -46,8 +46,7 @@ struct ChatContentListView: View {
                         }
                     }
                 }
-                
-                
             }
         }
-    }}
+    }
+}

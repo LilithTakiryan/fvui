@@ -182,7 +182,6 @@ struct PaywallScreen: View {
             Image(systemName: "clock.arrow.circlepath")
             Text("Cancel anytime")
                 .font(.custom("SF Pro Display", size: 14))
-                
         }
         .font(.system(size: 15, weight: .medium))
         .foregroundColor(CustomConstants.Paywall.subTextColor)
@@ -255,8 +254,6 @@ struct PaywallScreen: View {
     }
 }
 
-
-
 extension SKProduct {
     var localizedPrice: String {
         let formatter = NumberFormatter()
@@ -265,4 +262,3 @@ extension SKProduct {
         return formatter.string(from: price) ?? ""
     }
 }
-

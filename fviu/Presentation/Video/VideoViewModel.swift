@@ -53,7 +53,7 @@ final class VideoViewModel: ObservableObject {
         error = nil
         progress = 0
         status = nil
-        
+
         try? await Task.sleep(nanoseconds: 100_000_000)
         do {
             videoID = try await generateVideoUseCase.execute(prompt: prompt)
@@ -110,7 +110,7 @@ final class VideoViewModel: ObservableObject {
     func downloadVideo(from remoteURL: URL) async {
         isDownloading = true
         error = nil
-        
+
         do {
             let (tempFileURL, response) = try await URLSession.shared.download(from: remoteURL)
             guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
@@ -120,9 +120,9 @@ final class VideoViewModel: ObservableObject {
             let fileManager = FileManager.default
             let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
             let savedURL = documentsPath.appendingPathComponent("video_\(Int(Date().timeIntervalSince1970)).mp4")
-            
+
             try fileManager.copyItem(at: tempFileURL, to: savedURL)
-            
+
             let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
             guard status == .authorized || status == .limited else {
                 error = "Photo library permission required"
@@ -133,7 +133,7 @@ final class VideoViewModel: ObservableObject {
             try await PHPhotoLibrary.shared().performChanges {
                 PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: savedURL)
             }
-            
+
             localVideoURL = savedURL
             isDownloading = false
             logger.debug("saved video to Photos: \(savedURL.path)")
@@ -148,19 +148,19 @@ final class VideoViewModel: ObservableObject {
         let fileManager = FileManager.default
         let cacheDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         let cachedURL = cacheDir.appendingPathComponent("video_cache.mp4")
-        
+
         if fileManager.fileExists(atPath: cachedURL.path) {
             return cachedURL
         }
-        
+
         let (tempFileURL, response) = try await URLSession.shared.download(from: remoteURL)
         guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
             throw NetworkError.invalidResponse
         }
-        
+
         try fileManager.moveItem(at: tempFileURL, to: cachedURL)
         try fileManager.setAttributes([.protectionKey: FileProtectionType.none], ofItemAtPath: cachedURL.path)
-        
+
         logger.debug("cached video to: \(cachedURL.path)")
         return cachedURL
     }
@@ -169,7 +169,7 @@ final class VideoViewModel: ObservableObject {
         let fileManager = FileManager.default
         let cacheDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         let cachedURL = cacheDir.appendingPathComponent("video_cache.mp4")
-        
+
         try? fileManager.removeItem(at: cachedURL)
         logger.debug("cleared cache")
     }
@@ -184,19 +184,19 @@ final class VideoViewModel: ObservableObject {
             isLoading = false
             return
         }
-        
+
         do {
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             let videoURLs = fileURLs.filter { $0.pathExtension.lowercased() == "mp4" }
-            
+
             var items: [VideoHistoryItem] = []
             for url in videoURLs {
                 let thumbnail = await generateThumbnail(for: url)
                 items.append(VideoHistoryItem(url: url, thumbnail: thumbnail))
             }
-            self.savedVideos = items.sorted(by: { $0.url.lastPathComponent > $1.url.lastPathComponent })
+            savedVideos = items.sorted(by: { $0.url.lastPathComponent > $1.url.lastPathComponent })
         } catch {
-            self.savedVideos = []
+            savedVideos = []
         }
         isLoading = false
     }

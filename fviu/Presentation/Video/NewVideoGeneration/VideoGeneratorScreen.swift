@@ -54,7 +54,7 @@ struct VideoGeneratorScreen: View {
                             .background(Color.red.opacity(0.1))
                             .cornerRadius(8)
                         }
-                        
+
                         Button(action: {
                             Task { await checkPhotoPermission() }
                         }) {
@@ -82,7 +82,7 @@ struct VideoGeneratorScreen: View {
                     Image(.chatIcon)
                         .resizable()
                         .frame(width: 32, height: 32)
-                    
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text("AI Video")
                             .font(.system(size: 20, weight: .semibold))

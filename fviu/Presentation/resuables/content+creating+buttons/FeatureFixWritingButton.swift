@@ -30,7 +30,6 @@ struct FeatureUnderstandFasterButton: View {
     }
 }
 
-
 struct FeaturesView: View {
     let generateAction: () -> Void
     let fixAction: () -> Void

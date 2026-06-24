@@ -5,16 +5,14 @@
 //  Created by lilit on 23.06.26.
 //
 
-import SwiftUI
 import AVKit
 import SwiftUI
-import AVKit
 
 struct ResultScreen: View {
     @ObservedObject var viewModel: VideoViewModel
     @State private var player: AVPlayer
     @State private var showAlertVideoDownloaded = false
-    
+
     init(viewModel: VideoViewModel) {
         self.viewModel = viewModel
         if let url = viewModel.completedVideoURL {
@@ -23,7 +21,7 @@ struct ResultScreen: View {
             _player = State(initialValue: AVPlayer())
         }
     }
-    
+
     var body: some View {
         VStack(spacing: 16) {
             VideoPlayer(player: player)
@@ -38,7 +36,7 @@ struct ResultScreen: View {
                 .onDisappear {
                     player.pause()
                 }
-            
+
             HStack(spacing: 12) {
                 if let url = viewModel.completedVideoURL {
                     videoActionButtons(for: url)
@@ -58,7 +56,7 @@ struct ResultScreen: View {
                 withAnimation {
                     showAlertVideoDownloaded = true
                 }
-                
+
                 Task {
                     try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
                     withAnimation {
@@ -67,7 +65,7 @@ struct ResultScreen: View {
                 }
             }
         }
-        .overlay(alignment: .topTrailing){
+        .overlay(alignment: .topTrailing) {
             ReplaceButton(action: {
                 Task {
                     await viewModel.generateVideo(prompt: viewModel.prompt)
@@ -79,8 +77,7 @@ struct ResultScreen: View {
             viewModel.clearCache()
         }
     }
-    
-    @ViewBuilder
+
     private func videoActionButtons(for url: URL) -> some View {
         HStack(spacing: 12) {
             Button(action: {
@@ -92,7 +89,7 @@ struct ResultScreen: View {
                 background: CustomConstants.Colors.receiverBubbleBg,
                 verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding + 4
             ))
-            
+
             Button(action: {
                 Task { await viewModel.downloadVideo(from: url) }
             }) {
@@ -110,26 +107,27 @@ struct ResultScreen: View {
             .disabled(viewModel.isDownloading)
         }
     }
-    
+
     private func shareVideo() async {
         guard let url = viewModel.completedVideoURL else { return }
         do {
             let fileURL = try await viewModel.getCachedVideoURL(from: url)
-            
+
             let activityVC = UIActivityViewController(
                 activityItems: [fileURL],
                 applicationActivities: nil
             )
-            
+
             activityVC.excludedActivityTypes = [
                 .print,
                 .assignToContact,
                 .saveToCameraRoll,
-                .addToReadingList
+                .addToReadingList,
             ]
-            
+
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let rootVC = windowScene.windows.first?.rootViewController {
+               let rootVC = windowScene.windows.first?.rootViewController
+            {
                 rootVC.present(activityVC, animated: true)
             }
         } catch {

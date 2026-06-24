@@ -1,5 +1,5 @@
 //
-//  GenerateVideoView.swift
+//  MainScreenMenu.swift
 //  fviu
 //
 //  Created by lilit on 20.06.26.
@@ -18,8 +18,6 @@ import SwiftUI
         .padding()
     }
 }
-
-
 
 struct MainScreenMenu: View {
     let action: () -> Void
@@ -57,7 +55,6 @@ struct MainScreenMenu: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8.5)
                 .background(.white.opacity(0.2), in: Capsule())
-                
             }
             .padding(11.5)
             .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -70,4 +67,3 @@ struct MainScreenMenu: View {
         .buttonStyle(.plain)
     }
 }
-

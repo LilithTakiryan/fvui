@@ -15,7 +15,6 @@ enum CustomConstants {
     }
 
     enum Colors {
-     
         static let accent = Color(red: 1.0, green: 1.0, blue: 1.0)
         static let background = Color(red: 11 / 255.0, green: 7 / 255.0, blue: 14 / 255.0)
         static let card = Color(red: 31 / 255.0, green: 25 / 255.0, blue: 31 / 255.0)
@@ -48,7 +47,6 @@ enum CustomConstants {
         static let semiBold16 = Font.custom(fontName, size: 16).weight(.semibold)
         static let semiBold14 = Font.custom(fontName, size: 14).weight(.semibold)
 
-        
         static let medium20 = Font.custom(fontName, size: 20).weight(.medium)
         static let medium16 = Font.custom(fontName, size: 16).weight(.medium)
         static let medium12 = Font.custom(fontName, size: 12).weight(.medium)

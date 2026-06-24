@@ -5,17 +5,17 @@
 //  Created by lilit on 23.06.26.
 //
 
-import SwiftUI
 import AVKit
+import SwiftUI
 
 struct VideoHistoryScreen: View {
     @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
     @State private var selectedVideoURL: URL?
-    
+
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            
+
             if viewModel.isLoading {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
@@ -37,9 +37,7 @@ struct VideoHistoryScreen: View {
             VideoPlayerPresentationView(url: item.url)
         }
     }
-    
 
-    
     private var historyGridView: some View {
         ScrollView {
             HStack(alignment: .top, spacing: 12) {
@@ -48,7 +46,7 @@ struct VideoHistoryScreen: View {
                         gridCell(for: item, height: getHeight(for: index, isLeft: true))
                     }
                 }
-                
+
                 VStack(spacing: 12) {
                     ForEach(Array(rightColumnItems.enumerated()), id: \.element.id) { index, item in
                         gridCell(for: item, height: getHeight(for: index, isLeft: false))
@@ -58,23 +56,23 @@ struct VideoHistoryScreen: View {
             .padding(16)
         }
     }
-    
+
     private var leftColumnItems: [VideoHistoryItem] {
         viewModel.savedVideos.enumerated().filter { $0.offset % 2 == 0 }.map { $0.element }
     }
-    
+
     private var rightColumnItems: [VideoHistoryItem] {
         viewModel.savedVideos.enumerated().filter { $0.offset % 2 != 0 }.map { $0.element }
     }
-    
-    private func getHeight(for index: Int, isLeft: some Any) -> CGFloat {
+
+    private func getHeight(for index: Int, isLeft _: some Any) -> CGFloat {
         if index % 2 == 0 {
             return 260
         } else {
             return 180
         }
     }
-    
+
     private func gridCell(for item: VideoHistoryItem, height: CGFloat) -> some View {
         Button(action: { selectedVideoURL = item.url }) {
             ZStack {
@@ -107,7 +105,7 @@ struct IdentifiableURL: Identifiable {
 struct VideoPlayerPresentationView: View {
     let url: URL
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         NavigationStack {
             VideoPlayer(player: AVPlayer(url: url))

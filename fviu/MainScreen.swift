@@ -25,7 +25,7 @@ struct MainScreen: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 40) {
-                    VStack(spacing: 24){
+                    VStack(spacing: 24) {
                         Image(.sparkles)
                             .frame(width: 60, height: 60)
                         Text(.labelMainTools)
