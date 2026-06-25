@@ -11,7 +11,7 @@ import AVKit
 import AVKit
 import SwiftUI
 
-struct TemplateCard: View {
+struct TemplateCardRectangle: View {
     let template: VideoTemplateResponse
     @State private var player: AVPlayer?
 

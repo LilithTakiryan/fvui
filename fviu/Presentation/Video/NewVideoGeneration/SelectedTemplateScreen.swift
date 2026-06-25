@@ -4,14 +4,99 @@
 //
 //  Created by lilit on 25.06.26.
 //
-
+import PhotosUI
 import SwiftUI
+import AVKit
 
-struct Template2VideoScreen: View {
-    let templateId: Int64
-    
+struct SelectedTemplateScreen: View {
+    let selectedTemplate: VideoTemplateResponse
+    @State private var ratio = "16:9"
+    @State private var quality = "720p"
+    @State private var imageButtonState: GradientBorderPlusButton.ButtonState = .empty
+    @State private var selectedPhotoItem: PhotosPickerItem? = nil
+    @State private var player: AVPlayer?
+
     var body: some View {
-        Text("Template2VideoScreen \(templateId)")
+        VStack(alignment: .leading) {
+            VideoPlayer(player: player)
+                .disabled(true)
+                .scaleEffect(2.5)
+                .frame(height: 331)
+                .clipShape(RoundedRectangle(cornerRadius: CustomConstants.CornerRadius.radius))
+                .padding(10)
+                .onAppear {
+                    guard let url = URL(string: selectedTemplate.previewSmall) else { return }
+                    let player = AVPlayer(url: url)
+                    self.player = player
+                    player.isMuted = true
+                    player.play()
+                    
+                    NotificationCenter.default.addObserver(
+                        forName: .AVPlayerItemDidPlayToEndTime,
+                        object: player.currentItem,
+                        queue: .main
+                    ) { _ in
+                        player.seek(to: .zero)
+                        player.play()
+                    }
+                }
+                .onDisappear {
+                    player?.pause()
+                    player = nil
+                }
+            
+            PhotosPicker(
+                selection: $selectedPhotoItem,
+                matching: .images,
+                photoLibrary: .shared()
+            ) {
+                GradientBorderPlusButton(
+                    state: imageButtonState,
+                    action: {},
+                    onRemove: {
+                        selectedPhotoItem = nil
+                        imageButtonState = .empty
+                    }
+                )
+            }
+            .buttonStyle(.plain)
+        
+            MediaSettingsSelectorView(selectedRatio: $ratio, selectedQuality: $quality)
+            Button(action: {
+//                    Task { await checkPhotoPermission() }
+                print("generate")
+            }) {
+                Text(.labelGenerateVideo)
+            }
+            .buttonStyle(CustomCapsuleButtonStyle(
+                background: selectedPhotoItem == nil ? CustomConstants.Colors.brandGradientDisabled : CustomConstants.Colors.brandGradient,
+                verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
+                isScaled: true
+            ))
+            .disabled(selectedPhotoItem == nil)
+        }
+        .onChange(of: selectedPhotoItem) { newItem in
+            guard let newItem = newItem else { return }
+            
+            imageButtonState = .loading
+            
+            Task {
+                if let data = try? await newItem.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    
+                    await MainActor.run {
+                        withAnimation(.easeInOut) {
+                            imageButtonState = .filled(image: Image(uiImage: uiImage))
+                        }
+                    }
+                } else {
+                    await MainActor.run { imageButtonState = .empty }
+                }
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(selectedTemplate.name)
+
     }
 }
 

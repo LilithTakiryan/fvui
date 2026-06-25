@@ -17,7 +17,7 @@ struct TemplatesScreen: View {
     @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
     @State private var selectedCategory: String = ""
     @Environment(\.dismiss) var dismiss
-    @State private var selectedTemplateID: Int64 = 0
+    @State private var selectedTemplate = VideoTemplateResponse?.none
     @State private var showDetail = false
     
     private let columns = [
@@ -44,9 +44,9 @@ struct TemplatesScreen: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(filteredTemplates, id: \.id) { template in
-                        TemplateCard(template: template)
+                        TemplateCardRectangle(template: template)
                             .onTapGesture {
-                                selectedTemplateID = Int64(template.id)
+                                selectedTemplate = template
                                 showDetail = true
                             }
                     }
@@ -84,7 +84,9 @@ struct TemplatesScreen: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $showDetail) {
-            Template2VideoScreen(templateId: selectedTemplateID)
+            if let selectedTemplate = selectedTemplate {
+                SelectedTemplateScreen(selectedTemplate: selectedTemplate)
+            }
         }
         .background(CustomConstants.Colors.backgroundDeep.ignoresSafeArea())
         .onAppear {

@@ -7,11 +7,12 @@
 
 import SwiftUI
 
-struct MediaSettingsSelectorView_Previews: PreviewProvider {
-    static var previews: some View {
-        MediaSettingsSelectorView()
-    }
-}
+//struct MediaSettingsSelectorView_Previews: PreviewProvider {
+//    @State private var ratio = "16:9"
+//        @State private var quality = "720p"
+//    static var previews: some View {
+//       MediaSettingsSelectorView(selectedRatio: $ratio, selectedQuality: $quality)    }
+//}
 
 struct DropdownOption: Identifiable, Equatable {
     let id = UUID()
@@ -58,8 +59,8 @@ struct DropdownRow: View {
 }
 
 struct MediaSettingsSelectorView: View {
-    @State private var selectedRatio: String = "16:9"
-    @State private var selectedQuality: String = "720p"
+    @Binding  var selectedRatio: String
+    @Binding  var selectedQuality: String
 
     @State private var showRatioDropdown: Bool = false
     @State private var showQualityDropdown: Bool = false
@@ -177,7 +178,6 @@ struct MediaSettingsSelectorView: View {
 
                 Spacer()
             }
-            .padding(.horizontal, 24)
         }
     }
 }

@@ -32,6 +32,15 @@ enum CustomConstants {
             startPoint: .leading,
             endPoint: .trailing
         )
+        
+        static let brandGradientDisabled = LinearGradient(
+            colors: [
+                Color(red: 0.2, green: 0.2, blue: 0.2)
+            ],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        
     }
 
     enum Typography {
@@ -58,7 +67,7 @@ enum CustomConstants {
     }
 
     enum SquareButton {
-        static let size: CGFloat = 56
+        static let size: CGFloat = 100
         static let cornerRadius: CGFloat = 16
         static let borderLineWidth: CGFloat = 2
     }

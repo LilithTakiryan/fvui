@@ -23,21 +23,19 @@ struct GradientBorderPlusButton: View {
             Group {
                 switch state {
                 case .empty:
-                    Button(action: action) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 22, weight: .medium))
-                            .foregroundColor(.white)
-                            .frame(width: CustomConstants.SquareButton.size, height: CustomConstants.SquareButton.size)
-                    }
-                    .background(CustomConstants.Colors.receiverBubbleBg)
-                    .clipShape(RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius)
-                            .stroke(
-                                CustomConstants.Colors.brandGradient,
-                                lineWidth: CustomConstants.SquareButton.borderLineWidth
-                            )
-                    )
+                    Image(systemName: "plus")
+                        .font(.system(size: 24, weight: .medium))
+                        .foregroundColor(.white)
+                        .frame(width: CustomConstants.SquareButton.size, height: CustomConstants.SquareButton.size)
+                        .background(CustomConstants.Colors.receiverBubbleBg)
+                        .clipShape(RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius)
+                                .stroke(
+                                    CustomConstants.Colors.brandGradient,
+                                    lineWidth: CustomConstants.SquareButton.borderLineWidth
+                                )
+                        )
 
                 case .loading:
                     ZStack {
@@ -50,16 +48,15 @@ struct GradientBorderPlusButton: View {
                     .clipShape(RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius))
 
                 case let .filled(image):
-                    Button(action: action) {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: CustomConstants.SquareButton.size, height: CustomConstants.SquareButton.size)
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius))
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: CustomConstants.SquareButton.size, height: CustomConstants.SquareButton.size)
+                        .clipShape(RoundedRectangle(cornerRadius: CustomConstants.SquareButton.cornerRadius))
                 }
             }
-
+          
+            .contentShape(Rectangle())
             if case .filled = state {
                 Button(action: { onRemove?() }) {
                     Image(systemName: "xmark")
@@ -76,7 +73,6 @@ struct GradientBorderPlusButton: View {
         .frame(width: CustomConstants.SquareButton.size + 12, height: CustomConstants.SquareButton.size + 12)
     }
 }
-
 struct ReplaceButton: View {
     let action: () -> Void
 
