@@ -11,7 +11,6 @@ import os
 
 protocol IAPIClient {
     func request<T: Decodable>(_ endpoint: IEndpoint, response: T.Type) async throws -> T
-    func request(_ endpoint: IEndpoint) async throws
 }
 
 final class APIClient: IAPIClient {
@@ -21,38 +20,39 @@ final class APIClient: IAPIClient {
     private let logger = Logger(subsystem: "com.app.network", category: "APIClient")
 
     init(
-        session: URLSession = .shared,
-        decoder: JSONDecoder = .init(),
-        tokenProvider: APIconstants.TokenProvider = .bearer
-    ) {
-        self.session = session
-        self.decoder = decoder
-        self.tokenProvider = tokenProvider
+            session: URLSession = .shared,
+            decoder: JSONDecoder = .init(),
+            tokenProvider: APIconstants.TokenProvider = .bearer
+        ) {
+            self.session = session
+            self.tokenProvider = tokenProvider
+            
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            
+            self.decoder = decoder
+        }
+
+    func request<T: Decodable>(_ endpoint: IEndpoint, response: T.Type) async throws -> T {
+        let request = try prepareRequest(endpoint)
+        let (data, _) = try await session.data(for: request)
+        return try decodeResponse(data, as: T.self)
     }
 
-    private func performRequest(_ endpoint: IEndpoint) async throws -> (Data, URLResponse) {
+    private func prepareRequest(_ endpoint: IEndpoint) throws -> URLRequest {
         var request = try endpoint.makeRequest()
-
         request.setValue("Bearer \(tokenProvider.value)", forHTTPHeaderField: "Authorization")
-
         logger.info("Sending request to: \(request.url?.absoluteString ?? "Unknown URL")")
-        let (data, response) = try await session.data(for: request)
-        try validate(response, data: data)
-        return (data, response)
+        return request
     }
 
-    func request<T: Decodable & Sendable>(_ endpoint: IEndpoint, response _: T.Type) async throws -> T {
-        let (data, _) = try await performRequest(endpoint)
+    private func decodeResponse<T: Decodable>(_ data: Data, as type: T.Type) throws -> T {
         do {
             return try decoder.decode(T.self, from: data)
         } catch {
             logger.error("Decoding error: \(error.localizedDescription)")
+            print(error)
             throw NetworkError.decoding
         }
-    }
-
-    func request(_ endpoint: IEndpoint) async throws {
-        _ = try await performRequest(endpoint)
     }
 
     private func validate(_ response: URLResponse, data: Data) throws {
@@ -63,3 +63,5 @@ final class APIClient: IAPIClient {
         }
     }
 }
+
+

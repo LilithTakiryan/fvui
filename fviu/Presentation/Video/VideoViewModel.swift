@@ -20,6 +20,7 @@ struct VideoHistoryItem: Identifiable {
 final class VideoViewModel: ObservableObject {
     private let generateVideoUseCase: GenerateVideoFromTextUseCase
     private let getVideoStatusUseCase: GetVideoStatusUseCase
+    private let getTemplatesUseCase: GetTemplatesUseCase
     private let logger = Logger(subsystem: "com.video", category: "VideoViewModel")
 
     @Published var prompt = ""
@@ -33,16 +34,44 @@ final class VideoViewModel: ObservableObject {
     @Published var player: AVPlayer?
     @Published var shouldShowGenerating = false
     @Published var navigateToResult = false
-
+    @Published var savedVideos: [VideoHistoryItem] = []
+    @Published var isLoading = false
+    @Published var templates: [VideoTemplateResponse] = []
+    
+    
+    
     var completedVideoURL: URL? {
         guard let urlString = status?.video_url else { return nil }
         return URL(string: urlString)
     }
 
-    init(generateVideoUseCase: GenerateVideoFromTextUseCase, getVideoStatusUseCase: GetVideoStatusUseCase) {
+    init(generateVideoUseCase: GenerateVideoFromTextUseCase, getVideoStatusUseCase: GetVideoStatusUseCase, getTemplatesUseCase: GetTemplatesUseCase) {
         self.generateVideoUseCase = generateVideoUseCase
         self.getVideoStatusUseCase = getVideoStatusUseCase
+        self.getTemplatesUseCase = getTemplatesUseCase
     }
+    
+    func getTemplates() async {
+        
+        shouldShowGenerating = true
+        error = nil
+        progress = 0
+        status = nil
+
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        logger.info("templates: ")
+
+        do {
+            templates = try await getTemplatesUseCase.execute()
+            logger.info("templates: \(self.templates)")
+            await pollStatus()
+        } catch {
+            self.error = error.localizedDescription
+            print("error: \(error)")
+            isGenerating = false
+        }
+    }
+    
 
     func generateVideo(prompt: String) async {
         guard !prompt.isEmpty else { return }
@@ -174,8 +203,7 @@ final class VideoViewModel: ObservableObject {
         logger.debug("cleared cache")
     }
 
-    @Published var savedVideos: [VideoHistoryItem] = []
-    @Published var isLoading = false
+
 
     func fetchSavedVideos() async {
         isLoading = true

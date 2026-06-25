@@ -15,36 +15,49 @@ enum ChatEndpoint: IEndpoint {
     case send(chatID: String, text: String)
 
     func makeRequest() throws -> URLRequest {
-        let path: String
-        switch self {
-        case .chats: path = "/dola/chats"
-        case let .messages(id, _), let .send(id, _):
-            path = "/dola/chats/\(id)/messages"
-        }
+        let (path, httpMethod, queryItems, headers, body) = try configureEndpoint()
 
         var components = URLComponents(string: "\(APIconstants.baseURL)\(path)")!
-        var queryItems = APIconstants.defaultQueryItems
-
-        if let limit = extractLimit() {
-            queryItems.append(URLQueryItem(name: "limit", value: String(limit)))
-        }
-        components.queryItems = queryItems
+        components.queryItems = APIconstants.defaultQueryItems + queryItems
 
         var request = URLRequest(url: components.url!)
-        if case let .send(_, text) = self {
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            let payload: [String: Any?] = ["message": text, "persona_id": nil, "additional_prompt": nil]
-            request.httpBody = try JSONSerialization.data(withJSONObject: payload)
+        request.httpMethod = httpMethod
+
+        headers.forEach { key, value in
+            request.setValue(value, forHTTPHeaderField: key)
         }
+        
+        request.httpBody = body
+
         return request
     }
 
-    private func extractLimit() -> Int? {
+    private func configureEndpoint() throws -> (path: String, method: String, queryItems: [URLQueryItem], headers: [String: String], body: Data?) {
         switch self {
-        case let .chats(limit): return limit
-        case let .messages(_, limit): return limit
-        default: return nil
+        case let .chats(limit):
+            var queryItems: [URLQueryItem] = []
+            if let limit = limit {
+                queryItems.append(URLQueryItem(name: "limit", value: String(limit)))
+            }
+            return ("/dola/chats", "GET", queryItems, [:], nil)
+
+        case let .messages(id, limit):
+            var queryItems: [URLQueryItem] = []
+            if let limit = limit {
+                queryItems.append(URLQueryItem(name: "limit", value: String(limit)))
+            }
+            return ("/dola/chats/\(id)/messages", "GET", queryItems, [:], nil)
+
+        case let .send(id, text):
+            struct Payload: Encodable {
+                let message: String
+                let persona_id: String?
+                let additional_prompt: String?
+            }
+            let payload = Payload(message: text, persona_id: nil, additional_prompt: nil)
+            let body = try JSONEncoder().encode(payload)
+            let headers = ["Content-Type": "application/json"]
+            return ("/dola/chats/\(id)/messages", "POST", [], headers, body)
         }
     }
 }

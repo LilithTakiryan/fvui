@@ -8,4 +8,5 @@
 protocol IText2VideoRepository {
     func generate(prompt: String) async throws -> Int
     func status(id: Int) async throws -> Text2VideoStatusResponse
+    func getTemplates() async throws -> [VideoTemplateResponse]
 }

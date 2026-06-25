@@ -6,6 +6,6 @@
 //
 
 struct Text2VideoResponse: Decodable {
-    let video_id: Int
+    let videoId: Int
     let detail: String
 }

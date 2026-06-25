@@ -8,6 +8,7 @@
 protocol VideoNetworkService: Sendable {
     func generateVideoFromText(prompt: String) async throws -> Int
     func getStatus(videoID: Int) async throws -> Text2VideoStatusResponse
+    func getTemplates() async throws -> [VideoTemplateResponse]
 }
 
 final class PixverseNetworkService: VideoNetworkService {
@@ -23,6 +24,27 @@ final class PixverseNetworkService: VideoNetworkService {
 
     func generateVideoFromText(prompt: String) async throws -> Int {
         let result = try await api.request(Text2VideoEndpoint.generate(prompt), response: Text2VideoResponse.self)
-        return result.video_id
+        print("videoID: \(result.videoId)")
+        return result.videoId
+    }
+    
+    // 1. Create a generic envelope wrapper
+    struct ApiEnvelope<T: Decodable>: Decodable {
+        let data: T
+    }
+
+    // 2. Update your function to decode through the envelope
+    func getTemplates() async throws -> [VideoTemplateResponse] {
+        do {
+            let response = try await api.request(
+                Text2VideoEndpoint.template,
+                response: VideoTemplatesContainerResponse.self
+            )
+            return response.templates
+        } catch {
+            print("Template decode failed: \(error)")
+            throw error
+        }
     }
 }
+

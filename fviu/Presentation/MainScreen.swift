@@ -41,7 +41,7 @@ struct MainScreen: View {
                             ChatScreen()
                         }
                         .navigationDestination(isPresented: $navigateToGenerate) {
-                            VideoGeneratorScreen()
+                            TemplatesScreen()
                         }
                     }
 
