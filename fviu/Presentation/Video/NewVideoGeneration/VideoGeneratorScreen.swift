@@ -117,6 +117,11 @@ struct VideoGeneratorScreen: View {
                 checkPhotoPermissionOnReturn()
             }
         }
+        .onAppear {
+            Task {
+                await viewModel.getTemplates()
+            }
+        }
     }
 
     private func checkPhotoPermission() async {

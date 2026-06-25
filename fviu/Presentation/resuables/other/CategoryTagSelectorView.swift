@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CategoryTagSelectorView: View {
-    let categories = ["Popular", "Funny", "Sad", "Trends"]
-    @State private var selectedCategory: String = "Popular"
+    let categories: [String]
+    @Binding var selectedCategory: String
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -42,15 +42,5 @@ struct CategoryTagSelectorView: View {
             .padding(.horizontal, 20)
         }
         .background(CustomConstants.Colors.backgroundDeep)
-    }
-}
-
-#Preview {
-    ZStack {
-        CustomConstants.Colors.backgroundDeep.ignoresSafeArea()
-
-        VStack {
-            CategoryTagSelectorView()
-        }
     }
 }
