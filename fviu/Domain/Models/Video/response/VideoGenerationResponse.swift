@@ -5,7 +5,7 @@
 //  Created by lilit on 22.06.26.
 //
 
-struct Text2VideoResponse: Decodable {
+struct VideoGenerationResponse: Decodable {
     let videoId: Int
     let detail: String
 }

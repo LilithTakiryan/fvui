@@ -15,10 +15,12 @@ import SwiftUI
 
 struct TemplatesScreen: View {
     @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
+    @State private var showPermissionAlert = false
     @State private var selectedCategory: String = ""
     @Environment(\.dismiss) var dismiss
     @State private var showDetail = false
-    
+    @Environment(\.scenePhase) var scenePhase
+
     private let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -46,7 +48,9 @@ struct TemplatesScreen: View {
                         TemplateCardRectangle(template: template)
                             .onTapGesture {
                                 viewModel.selectedTemplate = template
-                                showDetail = true
+                                Task {
+                                    await checkPhotoPermission()
+                                }
                             }
                     }
                 }
@@ -89,6 +93,19 @@ struct TemplatesScreen: View {
                 )
             }
         }
+        .alert(.warningPhotoAccessRequired, isPresented: $showPermissionAlert) {
+            Button(.buttonOpenSettings, action: openCurrentAppSettings)
+            Button(.buttonCancel, role: .cancel) {
+                dismiss()
+            }
+        } message: {
+            Text(.warningEnablePhotoAccess)
+        }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                checkPhotoPermissionOnReturn()
+            }
+        }
         .background(CustomConstants.Colors.backgroundDeep.ignoresSafeArea())
         .onAppear {
             Task {
@@ -99,4 +116,48 @@ struct TemplatesScreen: View {
             }
         }
     }
+    
+    
+    private func checkPhotoPermission() async {
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+
+        switch status {
+        case .authorized, .limited:
+            showDetail = true
+        case .denied, .restricted:
+            showPermissionAlert = true
+        case .notDetermined:
+            await requestPhotoPermission()
+        @unknown default:
+            showDetail = true
+        }
+    }
+
+    private func requestPhotoPermission() async {
+        let newStatus = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+
+        if newStatus == .authorized || newStatus == .limited {
+            showDetail = true
+        } else {
+            showPermissionAlert = true
+        }
+    }
+
+    private func checkPhotoPermissionOnReturn() {
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        if status == .authorized || status == .limited {
+            Task {
+                showDetail = true
+            }
+            showPermissionAlert = false
+        }
+    }
+
+    private func openCurrentAppSettings() {
+        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+        if UIApplication.shared.canOpenURL(settingsUrl) {
+            UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+        }
+    }
 }
+

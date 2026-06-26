@@ -26,79 +26,82 @@ struct SelectedTemplateScreen: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Spacer()
-            ScrollViewReader { scrollProxy in
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack() {
-                        ForEach(viewModel.templates, id: \.id) { template in
-                            TemplateCarouselCard(
-                                template: template,
-                                isSelected: template.id == currentTemplate.id
-                            )
-                            .id(String(template.id))
-                            .onTapGesture {
-                                withAnimation {
-                                    currentTemplate = template
-                                    scrollProxy.scrollTo(String(template.id), anchor: .center)
+            if viewModel.isGenerating {
+                GeneratingView()
+            }else {
+                Spacer()
+                ScrollViewReader { scrollProxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack() {
+                            ForEach(viewModel.templates, id: \.id) { template in
+                                TemplateCarouselCard(
+                                    template: template,
+                                    isSelected: template.id == currentTemplate.id
+                                )
+                                .id(String(template.id))
+                                .onTapGesture {
+                                    withAnimation {
+                                        currentTemplate = template
+                                        scrollProxy.scrollTo(String(template.id), anchor: .center)
+                                    }
                                 }
                             }
                         }
+                        .padding()
+                        .frame(height: 331)
                     }
-                    .padding()
-                    .frame(height: 331)
-                }
-                .onAppear {
-                    scrollProxy.scrollTo(String(initialTemplate.id), anchor: .center)
-                    loadPreview(for: initialTemplate)
-                }
-            }
-            
-
-            
-            PhotosPicker(
-                selection: $selectedPhotoItem,
-                matching: .images,
-                photoLibrary: .shared()
-            ) {
-                GradientBorderPlusButton(
-                    state: imageButtonState,
-                    action: {},
-                    onRemove: {
-                        selectedPhotoItem = nil
-                        imageButtonState = .empty
+                    .onAppear {
+                        scrollProxy.scrollTo(String(initialTemplate.id), anchor: .center)
+                        loadPreview(for: initialTemplate)
                     }
-                )
-            }
-            .buttonStyle(.plain)
-        
-            MediaSettingsSelectorView(selectedRatio: $ratio, selectedQuality: $quality)
-           
-            Button(action: {
-                Task {
-                    guard let item = selectedPhotoItem,
-                          let data = try? await item.loadTransferable(type: Data.self) else { return }
-                    
-                    let inputModel = TemplateVideoInputModel(
-                        templateId: currentTemplate.id,
-                        imageData: data,
-                        duration: nil,
-                        quality: quality
+                }
+                
+                
+                
+                PhotosPicker(
+                    selection: $selectedPhotoItem,
+                    matching: .images,
+                    photoLibrary: .shared()
+                ) {
+                    GradientBorderPlusButton(
+                        state: imageButtonState,
+                        action: {},
+                        onRemove: {
+                            selectedPhotoItem = nil
+                            imageButtonState = .empty
+                        }
                     )
-                    
-                    await viewModel.template2Video(with: inputModel)
                 }
-            }) {
-                Text(.labelGenerateVideo)
+                .buttonStyle(.plain)
+                
+                MediaSettingsSelectorView(selectedRatio: $ratio, selectedQuality: $quality)
+                
+                Button(action: {
+                    Task {
+                        guard let item = selectedPhotoItem,
+                              let data = try? await item.loadTransferable(type: Data.self) else { return }
+                        
+                        let inputModel = TemplateVideoInputModel(
+                            templateId: currentTemplate.id,
+                            imageData: data,
+                            duration: nil,
+                            quality: quality
+                        )
+                        
+                        await viewModel.template2Video(with: inputModel)
+                    }
+                }) {
+                    Text(.labelGenerateVideo)
+                }
+                
+                .buttonStyle(CustomCapsuleButtonStyle(
+                    background: selectedPhotoItem == nil ? CustomConstants.Colors.brandGradientDisabled : CustomConstants.Colors.brandGradient,
+                    verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
+                    isScaled: true
+                ))
+                .disabled(selectedPhotoItem == nil)
+                Spacer()
             }
-            
-            .buttonStyle(CustomCapsuleButtonStyle(
-                background: selectedPhotoItem == nil ? CustomConstants.Colors.brandGradientDisabled : CustomConstants.Colors.brandGradient,
-                verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
-                isScaled: true
-            ))
-            .disabled(selectedPhotoItem == nil)
-            Spacer()
-
         }
         .padding(.horizontal, 16)
         .onChange(of: selectedPhotoItem) { newItem in
@@ -125,6 +128,9 @@ struct SelectedTemplateScreen: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(currentTemplate.name)
+        .navigationDestination(isPresented: $viewModel.navigateToResult) {
+            ResultScreen(viewModel: viewModel)
+        }
         .onDisappear {
             cleanupPlayer()
         }

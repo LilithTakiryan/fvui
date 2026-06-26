@@ -26,7 +26,7 @@ final class PixverseNetworkService: VideoNetworkService {
     }
 
     func generateVideoFromText(prompt: String) async throws -> Int {
-        let result = try await api.request(Text2VideoEndpoint.generate(prompt), response: Text2VideoResponse.self)
+        let result = try await api.request(Text2VideoEndpoint.generate(prompt), response: VideoGenerationResponse.self)
         print("videoID: \(result.videoId)")
         return result.videoId
     }
@@ -52,7 +52,7 @@ final class PixverseNetworkService: VideoNetworkService {
         do {
             let response = try await api.request(
                 Text2VideoEndpoint.template2video( templateId: templateId, imageData: imageData, duration: duration, quality: quality),
-                response: Text2VideoResponse.self
+                response: VideoGenerationResponse.self
             )
             print("network: \(response.videoId)")
             return response.videoId

@@ -129,7 +129,7 @@ final class VideoViewModel: ObservableObject {
             do {
                 let response = try await getVideoStatusUseCase.execute(id: videoID)
                 status = response
-
+                print("status response: \(response)")
                 switch response.status.lowercased() {
                 case "completed":
                     progress = 1.0
