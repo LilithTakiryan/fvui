@@ -22,6 +22,7 @@ final class VideoViewModel: ObservableObject {
     private let getVideoStatusUseCase: GetVideoStatusUseCase
     private let getTemplatesUseCase: GetTemplatesUseCase
     private let logger = Logger(subsystem: "com.video", category: "VideoViewModel")
+    
 
     @Published var prompt = ""
     @Published var videoID = 0
@@ -37,7 +38,7 @@ final class VideoViewModel: ObservableObject {
     @Published var savedVideos: [VideoHistoryItem] = []
     @Published var isLoading = false
     @Published var templates: [VideoTemplateResponse] = []
-    
+    @Published var selectedTemplate: VideoTemplateResponse?
     
     
     var completedVideoURL: URL? {

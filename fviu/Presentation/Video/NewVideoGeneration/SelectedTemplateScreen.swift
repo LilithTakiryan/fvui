@@ -9,41 +9,51 @@ import SwiftUI
 import AVKit
 
 struct SelectedTemplateScreen: View {
-    let selectedTemplate: VideoTemplateResponse
+    @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
+    let initialTemplate: VideoTemplateResponse
+    @State private var currentTemplate: VideoTemplateResponse
     @State private var ratio = "16:9"
     @State private var quality = "720p"
     @State private var imageButtonState: GradientBorderPlusButton.ButtonState = .empty
     @State private var selectedPhotoItem: PhotosPickerItem? = nil
     @State private var player: AVPlayer?
+    @State private var playbackObserver: NSObjectProtocol?
+
+    init(initialTemplate: VideoTemplateResponse) {
+        self.initialTemplate = initialTemplate
+        _currentTemplate = State(initialValue: initialTemplate)
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
-            VideoPlayer(player: player)
-                .disabled(true)
-                .scaleEffect(2.5)
-                .frame(height: 331)
-                .clipShape(RoundedRectangle(cornerRadius: CustomConstants.CornerRadius.radius))
-                .padding(10)
-                .onAppear {
-                    guard let url = URL(string: selectedTemplate.previewSmall) else { return }
-                    let player = AVPlayer(url: url)
-                    self.player = player
-                    player.isMuted = true
-                    player.play()
-                    
-                    NotificationCenter.default.addObserver(
-                        forName: .AVPlayerItemDidPlayToEndTime,
-                        object: player.currentItem,
-                        queue: .main
-                    ) { _ in
-                        player.seek(to: .zero)
-                        player.play()
+            Spacer()
+            ScrollViewReader { scrollProxy in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack() {
+                        ForEach(viewModel.templates, id: \.id) { template in
+                            TemplateCarouselCard(
+                                template: template,
+                                isSelected: template.id == currentTemplate.id
+                            )
+                            .id(String(template.id))
+                            .onTapGesture {
+                                withAnimation {
+                                    currentTemplate = template
+                                    scrollProxy.scrollTo(String(template.id), anchor: .center)
+                                }
+                            }
+                        }
                     }
+                    .padding()
+                    .frame(height: 331)
                 }
-                .onDisappear {
-                    player?.pause()
-                    player = nil
+                .onAppear {
+                    scrollProxy.scrollTo(String(initialTemplate.id), anchor: .center)
+                    loadPreview(for: initialTemplate)
                 }
+            }
+            
+
             
             PhotosPicker(
                 selection: $selectedPhotoItem,
@@ -63,8 +73,7 @@ struct SelectedTemplateScreen: View {
         
             MediaSettingsSelectorView(selectedRatio: $ratio, selectedQuality: $quality)
             Button(action: {
-//                    Task { await checkPhotoPermission() }
-                print("generate")
+                print("generate: \(currentTemplate.id)")
             }) {
                 Text(.labelGenerateVideo)
             }
@@ -74,7 +83,10 @@ struct SelectedTemplateScreen: View {
                 isScaled: true
             ))
             .disabled(selectedPhotoItem == nil)
+            Spacer()
+
         }
+        .padding(.horizontal, 16)
         .onChange(of: selectedPhotoItem) { newItem in
             guard let newItem = newItem else { return }
             
@@ -94,122 +106,116 @@ struct SelectedTemplateScreen: View {
                 }
             }
         }
+        .onChange(of: currentTemplate.id) { _ in
+            loadPreview(for: currentTemplate)
+        }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(selectedTemplate.name)
-
+        .navigationTitle(currentTemplate.name)
+        .onDisappear {
+            cleanupPlayer()
+        }
+    }
+    
+    private func loadPreview(for template: VideoTemplateResponse) {
+        cleanupPlayer()
+        
+        guard let url = URL(string: template.previewSmall) else { return }
+        
+        Task { @MainActor in
+            let newPlayer = AVPlayer(url: url)
+            self.player = newPlayer
+            newPlayer.isMuted = true
+            newPlayer.seek(to: .zero)
+            newPlayer.play()
+            
+            let observer = NotificationCenter.default.addObserver(
+                forName: .AVPlayerItemDidPlayToEndTime,
+                object: newPlayer.currentItem,
+                queue: .main
+            ) { [weak newPlayer] _ in
+                newPlayer?.seek(to: .zero)
+                newPlayer?.play()
+            }
+            self.playbackObserver = observer
+        }
+    }
+    
+    private func cleanupPlayer() {
+        player?.pause()
+        
+        if let observer = playbackObserver {
+            NotificationCenter.default.removeObserver(observer)
+            playbackObserver = nil
+        }
+        
+        player = nil
     }
 }
 
-
-
-
-
-//struct TemplatesScreen: View {
-//    @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
-//    @State private var showPermissionAlert = false
-//    @Environment(\.dismiss) var dismiss
-//    @Environment(\.scenePhase) var scenePhase
-//
-//
-//    var body: some View {
-//        VStack{
-//
-//        }
-//        .onAppear {
-//            Task {
-//                await viewModel.getTemplates()
-//            }
-//        }
-//        .toolbarBackground(Color(red: 0.11, green: 0.09, blue: 0.13), for: .navigationBar)
-//        .toolbarBackground(.visible, for: .navigationBar)
-//        .toolbarColorScheme(.dark, for: .navigationBar)
-//        .toolbar {
-//            ToolbarItem(placement: .principal) {
-//                HStack(spacing: 12) {
-//                    Image(.chatIcon)
-//                        .resizable()
-//                        .frame(width: 32, height: 32)
-//
-//                    VStack(alignment: .leading, spacing: 2) {
-//                        Text("AI Video")
-//                            .font(.system(size: 20, weight: .semibold))
-//                            .foregroundColor(.white)
-//                    }
-//                }
-//                .frame(maxWidth: .infinity, alignment: .leading)
-//            }
-//            ToolbarItem(placement: .navigationBarTrailing) {
-//                NavigationLink(destination: VideoHistoryScreen()) {
-//                    Image(.history)
-//                        .resizable()
-//                        .frame(width: 24, height: 24)
-//                        .foregroundColor(.white)
-//                }
-//            }
-//        }
-//        .navigationBarTitleDisplayMode(.inline)
-//        .navigationDestination(isPresented: $viewModel.navigateToResult) {
-//            ResultScreen(viewModel: viewModel)
-//        }
-//        .alert(.warningPhotoAccessRequired, isPresented: $showPermissionAlert) {
-//            Button(.buttonOpenSettings, action: openCurrentAppSettings)
-//            Button(.buttonCancel, role: .cancel) {
-//                dismiss()
-//            }
-//        } message: {
-//            Text(.warningEnablePhotoAccess)
-//        }
-//        .onChange(of: scenePhase) { newPhase in
-//            if newPhase == .active {
-//                checkPhotoPermissionOnReturn()
-//            }
-//        }
-//
-//    }
-//
-//
-//
-//
-//    private func checkPhotoPermission() async {
-//        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-//
-//        switch status {
-//        case .authorized, .limited:
-//            print("generate video todo")
-////            await viewModel.generateVideo(prompt: inputText)
-//        case .denied, .restricted:
-//            showPermissionAlert = true
-//        case .notDetermined:
-//            await requestPhotoPermission()
-//        @unknown default:
-//            print("default case")
-////            await viewModel.generateVideo(prompt: inputText)
-//        }
-//    }
-//
-//    private func requestPhotoPermission() async {
-//        let newStatus = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-//
-//        if newStatus == .authorized || newStatus == .limited {
-////            await viewModel.generateVideo(prompt: inputText)
-//        } else {
-//            showPermissionAlert = true
-//        }
-//    }
-//
-//    private func checkPhotoPermissionOnReturn() {
-//        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-//        if status == .authorized || status == .limited {
-////            Task { await viewModel.generateVideo(prompt: inputText) }
-//            print("checkPhotoPermissionOnReturn generate video todo")
-//            showPermissionAlert = false
-//        }
-//    }
-//
-//    private func openCurrentAppSettings() {
-//        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
-//        if UIApplication.shared.canOpenURL(settingsUrl) {
-//            UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
-//        }
-//    }
-//}
+struct TemplateCarouselCard: View {
+    let template: VideoTemplateResponse
+    let isSelected: Bool
+    @State private var player: AVPlayer?
+    
+    var body: some View {
+            ZStack {
+                if let player = player {
+                    VideoPlayer(player: player)
+                        .disabled(true)
+                        .allowsHitTesting(false)
+                        .scaleEffect(16/9, anchor: .center)
+                        .frame(width: 331)
+                        .clipped()
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 331)
+                        .overlay(
+                            ProgressView()
+                                .tint(.white)
+                        )
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: CustomConstants.CornerRadius.radius))
+            .overlay(
+                RoundedRectangle(cornerRadius: CustomConstants.CornerRadius.radius)
+                    .strokeBorder(
+                        isSelected ? Color.blue : Color.clear,
+                        lineWidth: 1
+                    )
+            )
+        .contentShape(Rectangle())
+        .onAppear {
+            loadPreview()
+        }
+        .onChange(of: isSelected) { selected in
+            if selected {
+                player?.play()
+            } else {
+                player?.pause()
+            }
+        }
+        .onChange(of: template.id) { _ in
+            player?.pause()
+            player = nil
+            loadPreview()
+        }
+        .onDisappear {
+            player?.pause()
+            player = nil
+        }
+    }
+    
+    private func loadPreview() {
+        Task { @MainActor in
+            guard let url = URL(string: template.previewSmall) else { return }
+            let asset = AVAsset(url: url)
+            let playerItem = AVPlayerItem(asset: asset)
+            
+            self.player = AVPlayer(playerItem: playerItem)
+            if isSelected {
+                player?.play()
+            }
+        }
+    }
+}

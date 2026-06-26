@@ -17,7 +17,7 @@ struct TemplatesScreen: View {
     @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
     @State private var selectedCategory: String = ""
     @Environment(\.dismiss) var dismiss
-    @State private var selectedTemplate = VideoTemplateResponse?.none
+//    @State private var selectedTemplate = VideoTemplateResponse?.none
     @State private var showDetail = false
     
     private let columns = [
@@ -46,7 +46,7 @@ struct TemplatesScreen: View {
                     ForEach(filteredTemplates, id: \.id) { template in
                         TemplateCardRectangle(template: template)
                             .onTapGesture {
-                                selectedTemplate = template
+                                viewModel.selectedTemplate = template
                                 showDetail = true
                             }
                     }
@@ -84,8 +84,10 @@ struct TemplatesScreen: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $showDetail) {
-            if let selectedTemplate = selectedTemplate {
-                SelectedTemplateScreen(selectedTemplate: selectedTemplate)
+            if let selectedTemplate = viewModel.selectedTemplate {
+                SelectedTemplateScreen(
+                    initialTemplate: selectedTemplate
+                )
             }
         }
         .background(CustomConstants.Colors.backgroundDeep.ignoresSafeArea())
