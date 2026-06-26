@@ -12,6 +12,7 @@ struct ResultScreen: View {
     @ObservedObject var viewModel: VideoViewModel
     @State private var player: AVPlayer
     @State private var showAlertVideoDownloaded = false
+    @Environment(\.dismiss) var dismiss
 
     init(viewModel: VideoViewModel) {
         self.viewModel = viewModel
@@ -68,8 +69,13 @@ struct ResultScreen: View {
         }
         .overlay(alignment: .topTrailing) {
             ReplaceButton(action: {
-                Task {
-                    await viewModel.generateVideo(prompt: viewModel.prompt)
+                print("replace")
+                if let input = viewModel.selectedInput {
+                    Task {
+                        await viewModel
+                            .template2Video(with: input)
+                        dismiss()
+                    }
                 }
             })
             .padding(16)

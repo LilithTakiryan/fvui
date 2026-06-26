@@ -92,7 +92,7 @@ final class ChatViewModel: ObservableObject, Sendable {
         let calendar = Calendar.current
         var grouped: [Date: [DolaChatItem]] = [:]
         for chat in chats {
-            if let date = parseISO8601Date(chat.updated_at) {
+            if let date = parseISO8601Date(chat.updatedAt) {
                 let dateOnly = calendar.startOfDay(for: date)
                 grouped[dateOnly, default: []].append(chat)
             }

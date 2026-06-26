@@ -34,7 +34,7 @@ final class VideoViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var templates: [VideoTemplateResponse] = []
     @Published var selectedTemplate: VideoTemplateResponse?
-    
+    @Published var selectedInput: TemplateVideoInputModel?
     
     var completedVideoURL: URL? {
         guard let urlString = status?.videoUrl else { return nil }
@@ -85,8 +85,8 @@ final class VideoViewModel: ObservableObject {
         try? await Task.sleep(nanoseconds: 100_000_000)
         do {
             videoID = try await generateVideoUseCase.execute(prompt: prompt)
+
             await pollStatus()
-            print("videoID: \(videoID)")
         } catch {
             self.error = error.localizedDescription
             isGenerating = false
@@ -95,6 +95,7 @@ final class VideoViewModel: ObservableObject {
     
     
     func template2Video(with input: TemplateVideoInputModel, ) async {
+        selectedInput = input
         isGenerating = true
         shouldShowGenerating = true
         navigateToResult = false

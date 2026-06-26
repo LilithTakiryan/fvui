@@ -28,16 +28,14 @@ struct ChatHistoryScreen: View {
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 16)
 
-                                ForEach(viewModel.groupedChats[date] ?? [], id: \.id) { chat in
-                                    NavigationLink(destination: ChatScreen()) {
-                                        ChatHistoryItem(
-                                            action: {},
-                                            summary: chat.title ?? "Untitled Chat",
-                                            time: viewModel.formatTime(chat.updated_at)
-                                        )
-                                    }
-                                    .buttonStyle(PlainButtonStyle())
+                                ForEach(
+                                    viewModel.groupedChats[date] ?? [],
+                                    id: \.chatId
+                                ) { chat in
+                                    chatHistoryRow(chat)
                                 }
+
+
                             }
                         }
                     }
@@ -55,4 +53,15 @@ struct ChatHistoryScreen: View {
             }
         }
     }
+    private func chatHistoryRow(_ chat: DolaChatItem) -> some View {
+        NavigationLink(destination: ChatScreen()) {
+            ChatHistoryItem(
+                action: {},
+                summary: chat.title ?? "Untitled Chat",
+                time: viewModel.formatTime(chat.updatedAt)  
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
 }
+
