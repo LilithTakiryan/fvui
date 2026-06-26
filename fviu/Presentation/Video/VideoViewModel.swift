@@ -10,11 +10,6 @@ import Combine
 import os
 import Photos
 
-struct VideoHistoryItem: Identifiable {
-    let id = UUID()
-    let url: URL
-    let thumbnail: UIImage?
-}
 
 @MainActor
 final class VideoViewModel: ObservableObject {

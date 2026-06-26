@@ -17,7 +17,6 @@ struct TemplatesScreen: View {
     @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
     @State private var selectedCategory: String = ""
     @Environment(\.dismiss) var dismiss
-//    @State private var selectedTemplate = VideoTemplateResponse?.none
     @State private var showDetail = false
     
     private let columns = [
