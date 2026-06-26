@@ -5,6 +5,8 @@
 //  Created by lilit on 22.06.26.
 //
 
+import Foundation
+
 final class Text2VideoRepositoryImpl: IText2VideoRepository {
     private let service: VideoNetworkService
     init(service: VideoNetworkService) {
@@ -21,5 +23,15 @@ final class Text2VideoRepositoryImpl: IText2VideoRepository {
     
     func getTemplates() async throws -> [VideoTemplateResponse] {
         try await service.getTemplates()
+    }
+    
+    func template2video( templateId: Int, imageData: Data, duration: Int?, quality: String?) async throws -> Int {
+        try await service
+            .template2video(
+                templateId: templateId,
+                imageData: imageData,
+                duration: duration,
+                quality: quality
+            )
     }
 }

@@ -21,9 +21,9 @@ final class VideoViewModel: ObservableObject {
     private let generateVideoUseCase: GenerateVideoFromTextUseCase
     private let getVideoStatusUseCase: GetVideoStatusUseCase
     private let getTemplatesUseCase: GetTemplatesUseCase
+    private let template2VideoUseCase: Template2VideoUseCase
     private let logger = Logger(subsystem: "com.video", category: "VideoViewModel")
     
-
     @Published var prompt = ""
     @Published var videoID = 0
     @Published var status: Text2VideoStatusResponse?
@@ -46,10 +46,13 @@ final class VideoViewModel: ObservableObject {
         return URL(string: urlString)
     }
 
-    init(generateVideoUseCase: GenerateVideoFromTextUseCase, getVideoStatusUseCase: GetVideoStatusUseCase, getTemplatesUseCase: GetTemplatesUseCase) {
+    init(generateVideoUseCase: GenerateVideoFromTextUseCase, getVideoStatusUseCase: GetVideoStatusUseCase, getTemplatesUseCase: GetTemplatesUseCase,
+         template2VideoUseCase: Template2VideoUseCase
+    ) {
         self.generateVideoUseCase = generateVideoUseCase
         self.getVideoStatusUseCase = getVideoStatusUseCase
         self.getTemplatesUseCase = getTemplatesUseCase
+        self.template2VideoUseCase = template2VideoUseCase
     }
     
     func getTemplates() async {
@@ -88,11 +91,40 @@ final class VideoViewModel: ObservableObject {
         do {
             videoID = try await generateVideoUseCase.execute(prompt: prompt)
             await pollStatus()
+            print("videoID: \(videoID)")
         } catch {
             self.error = error.localizedDescription
             isGenerating = false
         }
     }
+    
+    
+    func template2Video(with input: TemplateVideoInputModel, ) async {
+        isGenerating = true
+        shouldShowGenerating = true
+        navigateToResult = false
+        error = nil
+        progress = 0
+        status = nil
+
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        do {
+            videoID = try await template2VideoUseCase.execute(
+                templateId: input.templateId,
+                imageData: input.imageData,
+                duration: input.duration,
+                quality: input.quality
+            )
+            print("template2Video videoID: \(videoID)")
+            await pollStatus()
+        } catch {
+            self.error = error.localizedDescription
+            isGenerating = false
+        }
+    }
+
+    
+    
 
     private func pollStatus() async {
         var attempts = 0

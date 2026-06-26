@@ -8,6 +8,13 @@ import PhotosUI
 import SwiftUI
 import AVKit
 
+struct TemplateVideoInputModel {
+    let templateId: Int
+    let imageData: Data
+    let duration: Int?
+    let quality: String
+}
+
 struct SelectedTemplateScreen: View {
     @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
     let initialTemplate: VideoTemplateResponse
@@ -72,11 +79,25 @@ struct SelectedTemplateScreen: View {
             .buttonStyle(.plain)
         
             MediaSettingsSelectorView(selectedRatio: $ratio, selectedQuality: $quality)
+           
             Button(action: {
-                print("generate: \(currentTemplate.id)")
+                Task {
+                    guard let item = selectedPhotoItem,
+                          let data = try? await item.loadTransferable(type: Data.self) else { return }
+                    
+                    let inputModel = TemplateVideoInputModel(
+                        templateId: currentTemplate.id,
+                        imageData: data,
+                        duration: nil,
+                        quality: quality
+                    )
+                    
+                    await viewModel.template2Video(with: inputModel)
+                }
             }) {
                 Text(.labelGenerateVideo)
             }
+            
             .buttonStyle(CustomCapsuleButtonStyle(
                 background: selectedPhotoItem == nil ? CustomConstants.Colors.brandGradientDisabled : CustomConstants.Colors.brandGradient,
                 verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,

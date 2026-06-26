@@ -5,6 +5,8 @@
 //  Created by lilit on 22.06.26.
 //
 
+import Foundation
+
 struct GenerateVideoFromTextUseCase {
     private let repo: IText2VideoRepository
 

@@ -46,7 +46,12 @@ final class DependencyContainer: Sendable {
         let viewModel = VideoViewModel(
             generateVideoUseCase: GenerateVideoFromTextUseCase(repo: repository),
             getVideoStatusUseCase: GetVideoStatusUseCase(repo: repository),
-            getTemplatesUseCase: GetTemplatesUseCase(repo: repository)
+            getTemplatesUseCase: GetTemplatesUseCase(
+                repo: repository
+            ),
+            template2VideoUseCase: Template2VideoUseCase(
+                repo: repository
+            )
         )
 
         cachedVideoViewModel = viewModel
