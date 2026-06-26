@@ -35,6 +35,7 @@ final class APIClient: IAPIClient {
     func request<T: Decodable>(_ endpoint: IEndpoint, response: T.Type) async throws -> T {
         let request = try prepareRequest(endpoint)
         let (data, _) = try await session.data(for: request)
+        print(String(data: data, encoding: .utf8)!)
         return try decodeResponse(data, as: T.self)
     }
 

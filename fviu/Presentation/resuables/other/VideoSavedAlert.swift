@@ -7,11 +7,10 @@
 import SwiftUI
 
 #Preview {
-    VideoSavedAlert(showAlertVideoDownloaded: true)
+    VideoSavedAlert()
 }
 
 struct VideoSavedAlert: View {
-    @State var showAlertVideoDownloaded: Bool
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: "checkmark")
@@ -29,11 +28,5 @@ struct VideoSavedAlert: View {
         .background(.ultraThinMaterial)
         .cornerRadius(CustomConstants.CornerRadius.radius)
         .transition(.scale.combined(with: .opacity))
-        .task {
-            try? await Task.sleep(nanoseconds: 2_500_000_000) // 2.5 seconds
-            withAnimation {
-                showAlertVideoDownloaded = false
-            }
-        }
     }
 }

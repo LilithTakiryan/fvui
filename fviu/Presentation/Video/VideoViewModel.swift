@@ -37,7 +37,7 @@ final class VideoViewModel: ObservableObject {
     
     
     var completedVideoURL: URL? {
-        guard let urlString = status?.video_url else { return nil }
+        guard let urlString = status?.videoUrl else { return nil }
         return URL(string: urlString)
     }
 
@@ -135,7 +135,9 @@ final class VideoViewModel: ObservableObject {
                     progress = 1.0
                     isGenerating = false
                     shouldShowGenerating = false
-                    if let urlString = response.video_url, let url = URL(string: urlString) {
+                    if let urlString = response.videoUrl, let url = URL(
+                        string: urlString
+                    ) {
                         player = AVPlayer(url: url)
                     }
                     navigateToResult = true

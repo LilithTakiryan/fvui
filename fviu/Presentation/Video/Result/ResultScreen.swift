@@ -47,22 +47,23 @@ struct ResultScreen: View {
         .padding(16)
         .navigationTitle("Result")
         .onChange(of: viewModel.localVideoURL) { newValue in
-            if newValue != nil {
+            guard newValue != nil else { return }
+            withAnimation {
                 showAlertVideoDownloaded = true
             }
-        }
-        .onChange(of: viewModel.localVideoURL) { newValue in
-            if newValue != nil {
-                withAnimation {
-                    showAlertVideoDownloaded = true
-                }
-
-                Task {
-                    try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+            Task {
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+                await MainActor.run {
                     withAnimation {
                         showAlertVideoDownloaded = false
                     }
                 }
+            }
+        }
+        .overlay {
+            if showAlertVideoDownloaded {
+                VideoSavedAlert()
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
         .overlay(alignment: .topTrailing) {

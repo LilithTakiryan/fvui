@@ -6,8 +6,8 @@
 //
 
 struct Text2VideoStatusResponse: Decodable {
-    let video_id: Int?
+    let videoId: Int?
     let status: String
-    let video_url: String?
+    let videoUrl: String?
     let error: String?
 }
