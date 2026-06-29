@@ -9,7 +9,7 @@ import SwiftUI
 import AVKit
 
 struct SelectedTemplateScreen: View {
-    @StateObject private var viewModel = DependencyContainer.shared.makeVideoViewModel()
+    @StateObject private var viewModel: VideoViewModel = DependencyContainer.shared.makeVideoViewModel()
     let initialTemplate: VideoTemplateResponse
     @State private var currentTemplate: VideoTemplateResponse
     @State private var ratio = "16:9"
@@ -26,7 +26,7 @@ struct SelectedTemplateScreen: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            if viewModel.isGenerating {
+            if viewModel.phase == .requesting {
                 GeneratingView()
             }else {
                 Spacer()

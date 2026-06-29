@@ -10,6 +10,13 @@ import Combine
 import os
 import Photos
 
+enum GenerationPhase: Equatable {
+    case idle
+    case requesting
+    case polling
+    case completed
+    case failed(String)
+}
 
 @MainActor
 final class VideoViewModel: ObservableObject {
@@ -29,17 +36,15 @@ final class VideoViewModel: ObservableObject {
     @Published var localVideoURL: URL?
     @Published var player: AVPlayer?
     @Published var navigateToResult = false
+    @Published var phase: GenerationPhase = .idle
+    @Published var isDownloading = false
+    @Published var isLoading = false
+    @Published var error: String?
+    
     var completedVideoURL: URL? {
         guard let urlString = status?.videoUrl else { return nil }
         return URL(string: urlString)
     }
-
-    
-
-
-
-
-    
 
     init(generateVideoUseCase: GenerateVideoFromTextUseCase, getVideoStatusUseCase: GetVideoStatusUseCase, getTemplatesUseCase: GetTemplatesUseCase,
          template2VideoUseCase: Template2VideoUseCase
@@ -90,11 +95,7 @@ final class VideoViewModel: ObservableObject {
     }
 
     
-    
-    @Published var isGenerating = false
-    @Published var isDownloading = false
-    @Published var isLoading = false
-    @Published var error: String?
+
     
     func getTemplates() async {
         error = nil
@@ -110,13 +111,13 @@ final class VideoViewModel: ObservableObject {
         } catch {
             self.error = error.localizedDescription
             print("error: \(error)")
-            isGenerating = false
+            phase = .failed(error.localizedDescription)
         }
     }
     func generateVideo(prompt: String) async {
         guard !prompt.isEmpty else { return }
         self.prompt = prompt
-        isGenerating = true
+        phase = .requesting
         navigateToResult = false
         error = nil
         status = nil
@@ -124,16 +125,15 @@ final class VideoViewModel: ObservableObject {
         try? await Task.sleep(nanoseconds: 100_000_000)
         do {
             videoID = try await generateVideoUseCase.execute(prompt: prompt)
-
+            phase = .polling
             await pollStatus()
         } catch {
-            self.error = error.localizedDescription
-            isGenerating = false
+            phase = .failed(error.localizedDescription)
         }
     }
     func template2Video(with input: TemplateVideoInputModel, ) async {
         selectedInput = input
-        isGenerating = true
+        phase = .requesting
         navigateToResult = false
         error = nil
         status = nil
@@ -147,24 +147,25 @@ final class VideoViewModel: ObservableObject {
                 quality: input.quality
             )
             print("template2Video videoID: \(videoID)")
+            phase = .polling
             await pollStatus()
         } catch {
-            self.error = error.localizedDescription
-            isGenerating = false
+            phase = .failed(error.localizedDescription)
         }
     }
     private func pollStatus() async {
+        phase = .polling
         var attempts = 0
         let maxAttempts = 120
 
-        while attempts < maxAttempts, isGenerating {
+        while attempts < maxAttempts {
             do {
                 let response = try await getVideoStatusUseCase.execute(id: videoID)
                 status = response
                 print("status response: \(response)")
                 switch response.status.lowercased() {
                 case "completed":
-                    isGenerating = false
+                    phase = .completed
                     if let urlString = response.videoUrl, let url = URL(
                         string: urlString
                     ) {
@@ -173,27 +174,25 @@ final class VideoViewModel: ObservableObject {
                     navigateToResult = true
                     return
                 case "failed":
-                    error = response.error ?? "Generation failed"
-                    isGenerating = false
+                    phase = .failed(response.error ?? "Generation failed")
                     return
                 case "processing", "pending":
-                    isLoading = true
+                    phase = .polling
                 default:
-                    isLoading = false
+                    phase = .polling
                 }
 
-                if Task.isCancelled { isGenerating = false; return }
+                if Task.isCancelled { return }
                 try await Task.sleep(nanoseconds: 1_000_000_000)
                 attempts += 1
             } catch {
-                if Task.isCancelled { isGenerating = false; return }
+                if Task.isCancelled { return }
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
                 attempts += 1
             }
         }
         if attempts >= maxAttempts {
-            error = "Timeout"
-            isGenerating = false
+            phase = .failed("Timeout")
         }
     }
     func downloadVideo(from remoteURL: URL) async {

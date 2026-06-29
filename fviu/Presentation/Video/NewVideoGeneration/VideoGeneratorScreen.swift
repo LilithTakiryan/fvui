@@ -26,7 +26,7 @@ struct VideoGeneratorScreen: View {
             Color.black.ignoresSafeArea()
 
             VStack(spacing: 16) {
-                if viewModel.isGenerating {
+                if viewModel.phase == .requesting {
                     GeneratingView()
                 } else {
                     VStack(spacing: 16) {
@@ -65,7 +65,9 @@ struct VideoGeneratorScreen: View {
                             verticalPadding: CustomConstants.Sizes.mainButtonVerticalPadding,
                             isScaled: true
                         ))
-                        .disabled(inputText.isEmpty || viewModel.isGenerating)
+                        .disabled(
+                            inputText.isEmpty || viewModel.phase == .requesting
+                        )
 
                         Spacer()
                     }
