@@ -60,46 +60,6 @@ Data Layer (API & Local Storage)
 
 ### Manual Dependency Injection (`/DI`)
 
-```swift
-final class DependencyContainer: Sendable {
-    static let shared = DependencyContainer()
-    
-    private var cachedVideoViewModel: VideoViewModel?
-    private var cachedChatViewModel: ChatViewModel?
-    let apiClient = APIClient()
-    
-    @MainActor
-    func makeChatViewModel() -> ChatViewModel {
-        if let existing = cachedChatViewModel { return existing }
-        
-        let service = DolaNetworkService(api: apiClient)
-        let repository = ChatRepositoryImpl(service: service)
-        let viewModel = ChatViewModel(
-            fetchChatsUseCase: FetchChatsUseCase(repo: repository),
-            sendMessageUseCase: SendMessageUseCase(repo: repository)
-        )
-        cachedChatViewModel = viewModel
-        return viewModel
-    }
-    
-    @MainActor
-    func makeVideoViewModel() -> VideoViewModel {
-        if let existing = cachedVideoViewModel { return existing }
-        
-        let service = PixverseNetworkService(api: apiClient)
-        let repository = Text2VideoRepositoryImpl(service: service)
-        let viewModel = VideoViewModel(
-            generateVideoUseCase: GenerateVideoFromTextUseCase(repo: repository),
-            getVideoStatusUseCase: GetVideoStatusUseCase(repo: repository),
-            getTemplatesUseCase: GetTemplatesUseCase(repo: repository),
-            template2VideoUseCase: Template2VideoUseCase(repo: repository)
-        )
-        cachedVideoViewModel = viewModel
-        return viewModel
-    }
-}
-```
-
 **Benefits:**
 - Explicit object graph construction
 - Single responsibility
@@ -109,49 +69,15 @@ final class DependencyContainer: Sendable {
 
 ### MVVM Pattern
 
-**ViewModel** - Manages state and business logic:
-```swift
-@MainActor
-class ChatViewModel: ObservableObject {
-    @Published var messages: [ChatMessage] = []
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
-    
-    private let fetchChatsUseCase: FetchChatsUseCase
-    private let sendMessageUseCase: SendMessageUseCase
-    
-    func sendMessage(_ text: String) async {
-        isLoading = true
-        defer { isLoading = false }
-        
-        do {
-            let result = try await sendMessageUseCase.execute(text: text)
-            messages.append(result)
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-}
-```
+**ViewModel** - Manages state and business logic with:
+- `@Published` properties for reactive state
+- Async/await for asynchronous operations
+- Error handling and loading states
 
 **View** - Reactive UI tied to ViewModel state:
-```swift
-struct ChatScreen: View {
-    @StateObject private var viewModel = DependencyContainer.shared.makeChatViewModel()
-    
-    var body: some View {
-        ZStack {
-            if viewModel.isLoading {
-                ProgressView()
-            } else if let error = viewModel.errorMessage {
-                ErrorView(message: error)
-            } else {
-                MessagesList(messages: viewModel.messages)
-            }
-        }
-    }
-}
-```
+- State-driven UI updates
+- Conditional rendering based on loading/error states
+- Clean separation between presentation and logic
 
 ---
 
@@ -177,42 +103,19 @@ struct ChatScreen: View {
 - ✅ Smooth animations and transitions
 
 **Navigation:**
-```swift
-NavigationStack {
-    MainScreen()
-        .navigationDestination(isPresented: $navigateToChat) {
-            ChatScreen()
-        }
-        .navigationDestination(isPresented: $navigateToGenerate) {
-            TemplatesScreen()
-        }
-}
-```
+- NavigationStack-based navigation
+- Smooth transitions between screens
+- Deep linking support
 
 ### 3. **Animations**
 
 **Smooth Transitions:**
-```swift
-// Screen transitions
-.navigationDestination(isPresented: $showPaywall) {
-    PaywallScreen()
-}
+- Screen transitions with NavigationDestination
+- Loading state animations with ProgressView
+- Button and UI element animations
+- No visual lags through efficient view hierarchy
 
-// Loading states
-if viewModel.isLoading {
-    ProgressView()
-        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-        .scaleEffect(1.5)
-}
-
-// Button animations
-withAnimation(.easeOut(duration: 0.3)) {
-    showButton = true
-}
-```
-
-**No Visual Lags:**
-- Efficient view hierarchy
+**Performance Optimizations:**
 - Lazy loading of large lists
 - Debounced network requests
 - Proper async/await usage
@@ -233,148 +136,35 @@ APIClient (Base HTTP Client)
 ```
 
 **State Management:**
-```swift
-enum APIState<T> {
-    case idle
-    case loading
-    case success(T)
-    case error(String)
-}
-```
-
-**Request Handling:**
+- Idle, loading, success, and error states
 - Proper error handling with try-catch
-- Loading states during requests
 - Retry logic for network failures
 - Timeout handling
 
-**Response Processing:**
-```swift
-do {
-    let response = try await apiClient.request(endpoint, method: .post)
-    // Process success
-    isLoading = false
-} catch {
-    // Handle error gracefully
-    errorMessage = error.localizedDescription
-    isLoading = false
-}
-```
+**Request Handling:**
+- Async/await pattern for network calls
+- Loading states during requests
+- Graceful error message display
 
 ### 5. **AppHud Integration**
 
 **SubscriptionManager - Comprehensive State Control:**
-
-```swift
-@MainActor
-final class SubscriptionManager: NSObject, ObservableObject, ApphudDelegate {
-    static let shared = SubscriptionManager()
-    
-    @Published var hasPremium: Bool = false
-    @Published var apphudProducts: [ApphudProduct] = []
-    @Published var isLoading: Bool = false
-    
-    // Initialization
-    override private init() {
-        super.init()
-        Apphud.setDelegate(self)
-        updateSubscriptionStatusSync()
-    }
-    
-    // Purchase handling
-    func purchase(product: ApphudProduct) async -> Bool {
-        isLoading = true
-        defer { isLoading = false }
-        
-        let result = await Apphud.purchaseAsync(product)
-        updateSubscriptionStatusSync()
-        return result.success
-    }
-    
-    // Restore purchases
-    func restorePurchases() async {
-        isLoading = true
-        defer { isLoading = false }
-        await Apphud.restorePurchasesAsync()
-        updateSubscriptionStatusSync()
-    }
-    
-    // Delegate callbacks for real-time updates
-    nonisolated func paywallsDidLoad(_ paywalls: [ApphudPaywall]) {
-        Task { @MainActor [weak self] in
-            self?.parsePaywalls(paywalls)
-        }
-    }
-    
-    nonisolated func apphudDidChangeSubscriptions(_ subscriptions: [ApphudSubscription]) {
-        Task { @MainActor in
-            self.updateSubscriptionStatus()
-        }
-    }
-}
-```
+- Purchase handling with proper state management
+- Purchase restoration functionality
+- Real-time subscription status updates
+- Delegate callbacks for instant UI updates
 
 **Premium Content Gating:**
-
-```swift
-struct MainScreen: View {
-    @EnvironmentObject var subManager: SubscriptionManager
-    
-    var body: some View {
-        VStack {
-            // Always available features
-            OpenChatButton()
-            
-            // Premium-gated features
-            FeaturesView()
-                .premiumGated(showPaywall: $showPaywallScreen)
-        }
-        .onAppear {
-            if !subManager.hasPremium && showOneTimePaywall {
-                Task {
-                    try? await Task.sleep(nanoseconds: 1_500_000_000)
-                    await MainActor.run {
-                        showPaywallScreen = true
-                    }
-                }
-            }
-        }
-    }
-}
-```
+- Role-based feature access
+- Premium paywall integration
+- Instant access upon purchase
+- No app restart required
 
 **Paywall Screen:**
-
-```swift
-struct PaywallScreen: View {
-    @EnvironmentObject var subManager: SubscriptionManager
-    @State private var selectedId: String?
-    
-    var body: some View {
-        VStack {
-            HeaderSection()
-            FeaturesList()
-            CardsSection(options: $options, selectedId: $selectedId)
-            ActionButton(options: options, selectedId: selectedId, subManager: subManager)
-        }
-        .disabled(subManager.isLoading)
-        .onAppear {
-            loadApphudProducts()
-        }
-    }
-    
-    private func loadApphudProducts() {
-        options = subManager.apphudProducts.map { product in
-            SubscriptionOption(
-                id: product.productId,
-                duration: product.productId.contains("year") ? "Year" : "Month",
-                fullPrice: product.skProduct?.localizedPrice ?? "",
-                rawProduct: product
-            )
-        }
-    }
-}
-```
+- Dynamic product display
+- Multiple subscription tiers (Monthly, Yearly)
+- Clear pricing and benefits
+- Seamless purchase experience
 
 **Real-Time Access Updates:**
 - Delegate callbacks trigger immediate state updates
@@ -550,11 +340,9 @@ fvui/
 
 ### Running the App
 
-```bash
-cd fvui
-open fvui.xcodeproj
-# Select target and run on simulator or device
-```
+Open the Xcode project and run on simulator or device:
+- Ensure you have iOS 16+ deployment target
+- Run the target on your preferred simulator or device
 
 ### Setting Up AppHud
 
@@ -564,14 +352,7 @@ open fvui.xcodeproj
 
 ### Integrating with Your API
 
-Update endpoints in `Data/Network/Endpoints.swift`:
-
-```swift
-enum Endpoints {
-    static let chatAPI = "https://your-api.com/chat"
-    static let videoAPI = "https://your-api.com/video"
-}
-```
+Update endpoints in `Data/Network/Endpoints.swift` with your API base URLs for chat and video services.
 
 ---
 
