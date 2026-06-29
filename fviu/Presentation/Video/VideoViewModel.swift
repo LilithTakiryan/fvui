@@ -22,24 +22,23 @@ final class VideoViewModel: ObservableObject {
     @Published var prompt = ""
     @Published var videoID = 0
     @Published var status: Text2VideoStatusResponse?
-    @Published var error: String?
-    @Published var isGenerating = false
-    @Published var progress: Double = 0
-    @Published var isDownloading = false
-    @Published var localVideoURL: URL?
-    @Published var player: AVPlayer?
-    @Published var shouldShowGenerating = false
-    @Published var navigateToResult = false
     @Published var savedVideos: [VideoHistoryItem] = []
-    @Published var isLoading = false
     @Published var templates: [VideoTemplateResponse] = []
     @Published var selectedTemplate: VideoTemplateResponse?
     @Published var selectedInput: TemplateVideoInputModel?
-    
+    @Published var localVideoURL: URL?
+    @Published var player: AVPlayer?
     var completedVideoURL: URL? {
         guard let urlString = status?.videoUrl else { return nil }
         return URL(string: urlString)
     }
+
+    
+
+
+
+
+    
 
     init(generateVideoUseCase: GenerateVideoFromTextUseCase, getVideoStatusUseCase: GetVideoStatusUseCase, getTemplatesUseCase: GetTemplatesUseCase,
          template2VideoUseCase: Template2VideoUseCase
@@ -49,9 +48,56 @@ final class VideoViewModel: ObservableObject {
         self.getTemplatesUseCase = getTemplatesUseCase
         self.template2VideoUseCase = template2VideoUseCase
     }
+    func getCachedVideoURL(from remoteURL: URL) async throws -> URL {
+        let fileManager = FileManager.default
+        let cacheDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+        let cachedURL = cacheDir.appendingPathComponent("video_cache.mp4")
+
+        if fileManager.fileExists(atPath: cachedURL.path) {
+            return cachedURL
+        }
+
+        let (tempFileURL, response) = try await URLSession.shared.download(from: remoteURL)
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+
+        try fileManager.moveItem(at: tempFileURL, to: cachedURL)
+        try fileManager.setAttributes([.protectionKey: FileProtectionType.none], ofItemAtPath: cachedURL.path)
+
+        logger.debug("cached video to: \(cachedURL.path)")
+        return cachedURL
+    }
+    func clearCache() {
+        let fileManager = FileManager.default
+        let cacheDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+        let cachedURL = cacheDir.appendingPathComponent("video_cache.mp4")
+
+        try? fileManager.removeItem(at: cachedURL)
+        logger.debug("cleared cache")
+    }
+    private func generateThumbnail(for url: URL) async -> UIImage? {
+        let asset = AVAsset(url: url)
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.appliesPreferredTrackTransform = true
+        do {
+            let (cgImage, _) = try await generator.image(at: CMTime(seconds: 0, preferredTimescale: 60))
+            return UIImage(cgImage: cgImage)
+        } catch {
+            return nil
+        }
+    }
+
     
+    
+    @Published var isGenerating = false
+    @Published var progress: Double = 0
+    @Published var isDownloading = false
+    @Published var shouldShowGenerating = false
+    @Published var navigateToResult = false
+    @Published var isLoading = false
+    @Published var error: String?
     func getTemplates() async {
-        
         shouldShowGenerating = true
         error = nil
         progress = 0
@@ -70,8 +116,6 @@ final class VideoViewModel: ObservableObject {
             isGenerating = false
         }
     }
-    
-
     func generateVideo(prompt: String) async {
         guard !prompt.isEmpty else { return }
         self.prompt = prompt
@@ -92,8 +136,6 @@ final class VideoViewModel: ObservableObject {
             isGenerating = false
         }
     }
-    
-    
     func template2Video(with input: TemplateVideoInputModel, ) async {
         selectedInput = input
         isGenerating = true
@@ -118,10 +160,6 @@ final class VideoViewModel: ObservableObject {
             isGenerating = false
         }
     }
-
-    
-    
-
     private func pollStatus() async {
         var attempts = 0
         let maxAttempts = 120
@@ -166,7 +204,6 @@ final class VideoViewModel: ObservableObject {
             isGenerating = false
         }
     }
-
     func downloadVideo(from remoteURL: URL) async {
         isDownloading = true
         error = nil
@@ -203,39 +240,6 @@ final class VideoViewModel: ObservableObject {
             isDownloading = false
         }
     }
-
-    func getCachedVideoURL(from remoteURL: URL) async throws -> URL {
-        let fileManager = FileManager.default
-        let cacheDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-        let cachedURL = cacheDir.appendingPathComponent("video_cache.mp4")
-
-        if fileManager.fileExists(atPath: cachedURL.path) {
-            return cachedURL
-        }
-
-        let (tempFileURL, response) = try await URLSession.shared.download(from: remoteURL)
-        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-            throw NetworkError.invalidResponse
-        }
-
-        try fileManager.moveItem(at: tempFileURL, to: cachedURL)
-        try fileManager.setAttributes([.protectionKey: FileProtectionType.none], ofItemAtPath: cachedURL.path)
-
-        logger.debug("cached video to: \(cachedURL.path)")
-        return cachedURL
-    }
-
-    func clearCache() {
-        let fileManager = FileManager.default
-        let cacheDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-        let cachedURL = cacheDir.appendingPathComponent("video_cache.mp4")
-
-        try? fileManager.removeItem(at: cachedURL)
-        logger.debug("cleared cache")
-    }
-
-
-
     func fetchSavedVideos() async {
         isLoading = true
         let fileManager = FileManager.default
@@ -260,15 +264,4 @@ final class VideoViewModel: ObservableObject {
         isLoading = false
     }
 
-    private func generateThumbnail(for url: URL) async -> UIImage? {
-        let asset = AVAsset(url: url)
-        let generator = AVAssetImageGenerator(asset: asset)
-        generator.appliesPreferredTrackTransform = true
-        do {
-            let (cgImage, _) = try await generator.image(at: CMTime(seconds: 0, preferredTimescale: 60))
-            return UIImage(cgImage: cgImage)
-        } catch {
-            return nil
-        }
-    }
 }
