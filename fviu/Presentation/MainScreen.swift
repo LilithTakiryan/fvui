@@ -15,6 +15,7 @@ struct MainScreen: View {
     @State private var navigateToChat = false
     @State private var navigateToGenerate = false
     @State private var showPaywallScreen = false
+    @State private var showOneTimePaywall: Bool = true
     @EnvironmentObject var subManager: SubscriptionManager
     
 
@@ -42,10 +43,10 @@ struct MainScreen: View {
             
             FeaturesView(
                 generateAction: { navigateToGenerate = true },
-                fixAction: {navigateToChat = true},
-                summarizeAction: { navigateToChat = true}
+                fixAction: { navigateToChat = true },
+                summarizeAction: { navigateToChat = true }
             )
-            .premiumGated()
+            .premiumGated(showPaywall: $showPaywallScreen)
             .padding()
         }
     }
@@ -60,13 +61,14 @@ struct MainScreen: View {
                     .ignoresSafeArea()
                 MainScreenContent()
                     .onAppear {
-                        if !subManager.hasPremium {
+                        if !subManager.hasPremium && showOneTimePaywall   {
                             Task {
                                 // Delays for 1.5 seconds
                                 try? await Task.sleep(nanoseconds: 1_500_000_000)
                                 
                                 await MainActor.run {
                                     showPaywallScreen = true
+                                    showOneTimePaywall = false
                                 }
                             }
                         }

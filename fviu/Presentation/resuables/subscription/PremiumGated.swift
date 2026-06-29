@@ -9,7 +9,8 @@ import SwiftUI
 
 struct PremiumGated: ViewModifier {
     @EnvironmentObject var subManager: SubscriptionManager
-    @State private var showPaywall = false
+    /// Pass a binding from the parent to trigger navigation
+    @Binding var showPaywall: Bool
     
     func body(content: Content) -> some View {
         if subManager.hasPremium {
@@ -17,15 +18,19 @@ struct PremiumGated: ViewModifier {
         } else {
             content
                 .disabled(true)
-                .onTapGesture {
-                    showPaywall = true
-                }
+                .overlay(
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            showPaywall = true
+                        }
+                )
         }
     }
 }
 
 extension View {
-    func premiumGated() -> some View {
-        self.modifier(PremiumGated())
+    func premiumGated(showPaywall: Binding<Bool>) -> some View {
+        self.modifier(PremiumGated(showPaywall: showPaywall))
     }
 }
