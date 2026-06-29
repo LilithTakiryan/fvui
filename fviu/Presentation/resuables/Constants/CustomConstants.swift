@@ -45,9 +45,11 @@ enum CustomConstants {
 
     enum Typography {
         static let fontName = "Inter"
-        static let spProDisplay = "SP Pro Display"
-        static let spProDisplayRegular11 = Font.custom(spProDisplay, size: 11).weight(.regular)
-        static let spProDisplayRegular12 = Font.custom(spProDisplay, size: 12).weight(.regular)
+        static let spProDisplay = "SPProDisplay-Regular"
+        
+        static let spProDisplayRegular11 = Font.custom(spProDisplay, size: 11)
+        static let spProDisplayRegular12 = Font.custom(spProDisplay, size: 12)
+        
         static let bold34 = Font.custom(fontName, size: 34).weight(.bold)
         static let bold24 = Font.custom(fontName, size: 24).weight(.bold)
         static let bold28 = Font.custom(fontName, size: 28).weight(.bold)
