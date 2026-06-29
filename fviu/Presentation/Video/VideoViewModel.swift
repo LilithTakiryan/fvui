@@ -28,6 +28,7 @@ final class VideoViewModel: ObservableObject {
     @Published var selectedInput: TemplateVideoInputModel?
     @Published var localVideoURL: URL?
     @Published var player: AVPlayer?
+    @Published var navigateToResult = false
     var completedVideoURL: URL? {
         guard let urlString = status?.videoUrl else { return nil }
         return URL(string: urlString)
@@ -91,16 +92,12 @@ final class VideoViewModel: ObservableObject {
     
     
     @Published var isGenerating = false
-    @Published var progress: Double = 0
     @Published var isDownloading = false
-    @Published var shouldShowGenerating = false
-    @Published var navigateToResult = false
     @Published var isLoading = false
     @Published var error: String?
+    
     func getTemplates() async {
-        shouldShowGenerating = true
         error = nil
-        progress = 0
         status = nil
 
         try? await Task.sleep(nanoseconds: 100_000_000)
@@ -120,10 +117,8 @@ final class VideoViewModel: ObservableObject {
         guard !prompt.isEmpty else { return }
         self.prompt = prompt
         isGenerating = true
-        shouldShowGenerating = true
         navigateToResult = false
         error = nil
-        progress = 0
         status = nil
 
         try? await Task.sleep(nanoseconds: 100_000_000)
@@ -139,10 +134,8 @@ final class VideoViewModel: ObservableObject {
     func template2Video(with input: TemplateVideoInputModel, ) async {
         selectedInput = input
         isGenerating = true
-        shouldShowGenerating = true
         navigateToResult = false
         error = nil
-        progress = 0
         status = nil
 
         try? await Task.sleep(nanoseconds: 100_000_000)
@@ -171,9 +164,7 @@ final class VideoViewModel: ObservableObject {
                 print("status response: \(response)")
                 switch response.status.lowercased() {
                 case "completed":
-                    progress = 1.0
                     isGenerating = false
-                    shouldShowGenerating = false
                     if let urlString = response.videoUrl, let url = URL(
                         string: urlString
                     ) {
@@ -185,9 +176,10 @@ final class VideoViewModel: ObservableObject {
                     error = response.error ?? "Generation failed"
                     isGenerating = false
                     return
-                case "processing": progress = 0.7
-                case "pending": progress = 0.3
-                default: progress = 0.3
+                case "processing", "pending":
+                    isLoading = true
+                default:
+                    isLoading = false
                 }
 
                 if Task.isCancelled { isGenerating = false; return }

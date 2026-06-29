@@ -26,7 +26,7 @@ struct VideoGeneratorScreen: View {
             Color.black.ignoresSafeArea()
 
             VStack(spacing: 16) {
-                if viewModel.isGenerating || viewModel.shouldShowGenerating {
+                if viewModel.isGenerating {
                     GeneratingView()
                 } else {
                     VStack(spacing: 16) {

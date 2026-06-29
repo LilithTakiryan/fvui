@@ -20,10 +20,6 @@ struct PremiumGated: ViewModifier {
                 .onTapGesture {
                     showPaywall = true
                 }
-                .sheet(isPresented: $showPaywall) {
-                    PaywallScreen()
-                        .environmentObject(subManager)
-                }
         }
     }
 }
