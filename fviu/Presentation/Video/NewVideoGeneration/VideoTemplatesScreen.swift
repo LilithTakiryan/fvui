@@ -38,80 +38,84 @@ struct TemplatesScreen: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            CategoryTagSelectorView(categories: dynamicCategories, selectedCategory: $selectedCategory)
-                .padding(.vertical, 12)
-
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(filteredTemplates, id: \.id) { template in
-                        TemplateCardRectangle(template: template)
-                            .onTapGesture {
-                                viewModel.selectedTemplate = template
-                                Task {
-                                    await checkPhotoPermission()
+        if viewModel.isLoading {
+            ProgressView()
+        } else {
+            VStack(spacing: 0) {
+                CategoryTagSelectorView(categories: dynamicCategories, selectedCategory: $selectedCategory)
+                    .padding(.vertical, 12)
+                
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 16) {
+                        ForEach(filteredTemplates, id: \.id) { template in
+                            TemplateCardRectangle(template: template)
+                                .onTapGesture {
+                                    viewModel.selectedTemplate = template
+                                    Task {
+                                        await checkPhotoPermission()
+                                    }
                                 }
-                            }
+                        }
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 12)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
             }
-        }
-        .toolbarBackground(Color(red: 0.11, green: 0.09, blue: 0.13), for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .toolbarColorScheme(.dark, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                HStack(spacing: 12) {
-                    Image(.chatIcon)
-                        .resizable()
-                        .frame(width: 32, height: 32)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("AI Video")
-                            .font(.system(size: 20, weight: .semibold))
+            .toolbarBackground(Color(red: 0.11, green: 0.09, blue: 0.13), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    HStack(spacing: 12) {
+                        Image(.chatIcon)
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("AI Video")
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: VideoHistoryScreen()) {
+                        Image(.history)
+                            .resizable()
+                            .frame(width: 24, height: 24)
                             .foregroundColor(.white)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: VideoHistoryScreen()) {
-                    Image(.history)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.white)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showDetail) {
+                if let selectedTemplate = viewModel.selectedTemplate {
+                    SelectedTemplateScreen(
+                        initialTemplate: selectedTemplate
+                    )
                 }
             }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(isPresented: $showDetail) {
-            if let selectedTemplate = viewModel.selectedTemplate {
-                SelectedTemplateScreen(
-                    initialTemplate: selectedTemplate
-                )
+            .alert(.warningPhotoAccessRequired, isPresented: $showPermissionAlert) {
+                Button(.buttonOpenSettings, action: openCurrentAppSettings)
+                Button(.buttonCancel, role: .cancel) {
+                    dismiss()
+                }
+            } message: {
+                Text(.warningEnablePhotoAccess)
             }
-        }
-        .alert(.warningPhotoAccessRequired, isPresented: $showPermissionAlert) {
-            Button(.buttonOpenSettings, action: openCurrentAppSettings)
-            Button(.buttonCancel, role: .cancel) {
-                dismiss()
+            .onChange(of: scenePhase) { newPhase in
+                if newPhase == .active {
+                    checkPhotoPermissionOnReturn()
+                }
             }
-        } message: {
-            Text(.warningEnablePhotoAccess)
-        }
-        .onChange(of: scenePhase) { newPhase in
-            if newPhase == .active {
-                checkPhotoPermissionOnReturn()
-            }
-        }
-        .background(CustomConstants.Colors.backgroundDeep.ignoresSafeArea())
-        .onAppear {
-            Task {
-                await viewModel.getTemplates()
-                if let firstCategory = dynamicCategories.first {
-                    selectedCategory = firstCategory
+            .background(CustomConstants.Colors.backgroundDeep.ignoresSafeArea())
+            .onAppear {
+                Task {
+                    await viewModel.getTemplates()
+                    if let firstCategory = dynamicCategories.first {
+                        selectedCategory = firstCategory
+                    }
                 }
             }
         }

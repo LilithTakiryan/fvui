@@ -37,8 +37,11 @@ struct PaywallScreen: View {
 
     var body: some View {
         ZStack {
-            CustomConstants.Colors.backgroundDeep.ignoresSafeArea()
-
+            Color.black
+            Image(.bg)
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
             if subManager.isLoading {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
@@ -46,14 +49,18 @@ struct PaywallScreen: View {
                     .zIndex(1)
             }
 
-            VStack(spacing: 24) {
+            VStack(spacing: 32) {
+                Spacer()
                 Spacer()
 
                 HeaderSection()
                 FeaturesList()
+
                 CardsSection(options: $options, selectedId: $selectedId)
+
                 CancelIndicator()
                 ActionButton(options: options, selectedId: selectedId, subManager: subManager)
+
                 FooterLinks(subManager: subManager)
 
                 Spacer()
@@ -87,8 +94,11 @@ struct PaywallScreen: View {
                     showButton = true
                 }
             }
+            
+            print("[PaywallScreen] Appeared, checking for Apphud products...")
         }
         .onChange(of: subManager.apphudProducts) { _ in
+            print("[PaywallScreen] apphudProducts changed, reloading...")
             loadApphudProducts()
         }
         .onDisappear {
@@ -98,7 +108,12 @@ struct PaywallScreen: View {
 
     private func loadApphudProducts() {
         let products = subManager.apphudProducts
-        guard !products.isEmpty else { return }
+        guard !products.isEmpty else {
+            print("[PaywallScreen] No products loaded yet (will use static options)")
+            return
+        }
+
+        print("[PaywallScreen] Loading \(products.count) Apphud products")
 
         options = products.map { apphudProduct in
             let skProduct = apphudProduct.skProduct

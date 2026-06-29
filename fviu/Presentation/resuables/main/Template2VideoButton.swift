@@ -19,7 +19,7 @@ import SwiftUI
     }
 }
 
-struct MainScreenMenu: View {
+struct Template2VideoButton: View {
     let action: () -> Void
     var body: some View {
         Button(action: action) {

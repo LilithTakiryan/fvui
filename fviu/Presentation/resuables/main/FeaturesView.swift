@@ -37,7 +37,7 @@ struct FeaturesView: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            MainScreenMenu(action: generateAction)
+            Template2VideoButton(action: generateAction)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             VStack(spacing: 12) {
